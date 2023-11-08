@@ -135,24 +135,33 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                     </div>
                     <nav class="nav navbar-nav">
-                        <ul class=" navbar-right">
+                        <ul class="navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
                                     id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="anggrek-ungu.jpeg" alt="">Anggrek
+                                    <img src="anggrek-ungu.jpeg" alt=""> Anggrek
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right"
                                     aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="javascript:;"> Profile</a>
+                                    <a class="dropdown-item" href="profile.php">Profile</a>
                                     </a>
-                                    <a class="dropdown-item" href="login.html"><i class="fa fa-sign-out pull-right"></i>
-                                        Log Out</a>
+                                    <a class="dropdown-item" href="javascript:void(0);" onclick="logoutConfirmation();">
+                                        <i class="fa fa-sign-out pull-right"></i> Log Out
+                                    </a>
                                 </div>
                             </li>
                         </ul>
                     </nav>
                 </div>
             </div>
+
+            <script>
+                function logoutConfirmation() {
+                    if (confirm('Apakah Anda yakin ingin Logout?')) {
+                        window.location.href = 'login.php';
+                    }
+                }
+            </script>
             <!-- /top navigation -->
 
             <!-- page content -->
@@ -161,17 +170,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <div class="page-title">
                         <div class="title_left">
                             <h3>Data-data Supplier</h3>
-                        </div>
-
-                        <div class="title_right">
-                            <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search for...">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-secondary" type="button">Go!</button>
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -201,7 +199,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             <th>Nama</th>
                                                             <th>Alamat</th>
                                                             <th>No_Telp</th>
-                                                            <th>Action</th>
+                                                            <th style="width: 130px;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -214,8 +212,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             echo "<td>" . $row['alamat'] . "</td>";
                                                             echo "<td>" . $row['no_telp'] . "</td>";
                                                             echo '<td>';
-                                                            echo '<button data-target="#edit-modal" data-toggle="modal" action="update/updatesupplier.php" id="edit_' . $no . '" type="button" name="edit" class="btn btn-primary" onclick="editData(' . $no . ')">Edit</button>';
-                                                            echo ' <button action="delete/deletesupplier.php" id="delete_' . $no . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $no . ')">Delete</button>';
+                                                            echo '<button id="edit_' . $no . '" type="button" name="edit" data-toggle="modal" data-target="#edit-modal" data-id="' . $row['id_supplier'] . '" class="btn btn-primary" data-id="' . $row['id_supplier'] . '">Edit</button>';
+                                                            echo '<button id="delete_' . $row['id_supplier'] . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $row['id_supplier'] . ')">Delete</button>';
                                                             echo '</td>';
                                                             echo "</tr>";
                                                             $no++;
@@ -270,6 +268,47 @@ while ($row = mysqli_fetch_assoc($result)) {
                             <!-- Custom Theme Scripts -->
                             <script src="admin/build/js/custom.min.js"></script>
 
+                            <script>
+                                $(document).on('click', 'button[name="edit"]', function () {
+                                    var id_supplier = $(this).data('id');
+                                    var row = $(this).closest('tr');
+                                    var nama = row.find('td:eq(2)').text();
+                                    var alamat = row.find('td:eq(3)').text();
+                                    var notelp = row.find('td:eq(4)').text();
+
+                                    $('#id_supplier').val(id_supplier);
+                                    $('#nama').val(nama);
+                                    $('#alamat').val(alamat);
+                                    $('#notelp').val(notelp);
+                                });
+                            </script>
+
+                            <script>
+                                function deleteData(id) {
+                                    console.log('Menghapus id_supplier: ' + id);
+                                    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: 'delete/deletesupplier.php',
+                                            data: { delete: 1, delete_id: id },
+                                            success: function (response) {
+                                                if (response === 'success') {
+                                                    location.reload();
+                                                    alert('Data Supplier berhasil dihapus.');
+                                                } else {
+                                                    alert('Gagal menghapus data Supplier. Error: ' + response);
+                                                }
+                                            },
+                                            error: function () {
+                                                alert('Gagal menghapus data Supplier.');
+                                            }
+                                        });
+                                    }
+                                }
+
+                            </script>
+
+
 </body>
 
 </html>
@@ -282,10 +321,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <h4 class="modal-title">Form Ubah Data Anggrek</h4>
             </div>
             <div class="modal-body">
-                <form action="update/updatepelanggan.php" method="post" id="insert_form" enctype='multipart/form-data'>
+                <form action="update/updatesupplier.php" method="post" id="insert_form" enctype='multipart/form-data'>
 
                     <label>Id Supplier</label>
-                    <input type="text" name="id_supplier" id="id_supplier" class="form-control" />
+                    <input type="text" name="id_supplier" id="id_supplier" class="form-control" readonly/>
                     <br />
                     <label>Nama</label>
                     <input type="text" name="nama" id="nama" class="form-control" />

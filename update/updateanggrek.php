@@ -1,7 +1,7 @@
 <?php
 require_once("../koneksi.php");
 
-if(isset($_POST['update'])) {
+if (isset($_POST['update'])) {
     $id = $_POST['id'];
     $nama = $_POST['nama'];
     $jenis = $_POST['jenis'];
@@ -13,7 +13,6 @@ if(isset($_POST['update'])) {
     $result = mysqli_query($koneksi, $query);
 
     if ($result) {
-        // Redirect ke halaman yang sesuai setelah pembaruan berhasil
         header("Location: ../DataAnggrek.php");
         exit(); // Pastikan untuk keluar setelah pengalihan
     } else {

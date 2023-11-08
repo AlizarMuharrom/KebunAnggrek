@@ -116,24 +116,33 @@
 						<a id="menu_toggle"><i class="fa fa-bars"></i></a>
 					</div>
 					<nav class="nav navbar-nav">
-						<ul class=" navbar-right">
+						<ul class="navbar-right">
 							<li class="nav-item dropdown open" style="padding-left: 15px;">
 								<a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
 									id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-									<img src="anggrek-ungu.jpeg" alt="">Anggrek
+									<img src="anggrek-ungu.jpeg" alt=""> Anggrek
 								</a>
 								<div class="dropdown-menu dropdown-usermenu pull-right"
 									aria-labelledby="navbarDropdown">
-									<a class="dropdown-item" href="javascript:;"> Profile</a>
+									<a class="dropdown-item" href="profile.php">Profile</a>
 									</a>
-									<a class="dropdown-item" href="login.html"><i class="fa fa-sign-out pull-right"></i>
-										Log Out</a>
+									<a class="dropdown-item" href="javascript:void(0);" onclick="logoutConfirmation();">
+										<i class="fa fa-sign-out pull-right"></i> Log Out
+									</a>
 								</div>
 							</li>
 						</ul>
 					</nav>
 				</div>
 			</div>
+
+			<script>
+				function logoutConfirmation() {
+					if (confirm('Apakah Anda yakin ingin Logout?')) {
+						window.location.href = 'login.php';
+					}
+				}
+			</script>
 			<!-- /top navigation -->
 
 			<!-- page content -->
@@ -142,17 +151,6 @@
 					<div class="page-title">
 						<div class="title_left">
 							<h3>Form Supplier</h3>
-						</div>
-
-						<div class="title_right">
-							<div class="col-md-5 col-sm-5  form-group pull-right top_search">
-								<div class="input-group">
-									<input type="text" class="form-control" placeholder="Search for...">
-									<span class="input-group-btn">
-										<button class="btn btn-default" type="button">Go!</button>
-									</span>
-								</div>
-							</div>
 						</div>
 					</div>
 					<div class="clearfix"></div>
