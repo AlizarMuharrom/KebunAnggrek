@@ -1,25 +1,20 @@
 <?php
-require_once("../koneksi.php");
+if ($_GET['reqkarya'] == "dell") {
+    require_once "../koneksi.php";
+    session_start();
 
-if (isset($_POST['delete']) && isset($_POST['delete_id'])) {
-    $id = $_POST['delete_id'];
-    $query = "DELETE FROM supplier WHERE id_supplier = ?";
-    $stmt = mysqli_prepare($koneksi, $query);
+    if (!empty($_GET)) {
+        $output = '';
+        $id = $_GET["id"];
 
-    if ($stmt) {
-        mysqli_stmt_bind_param($stmt, "i", $id);
-        if (mysqli_stmt_execute($stmt)) {
-            echo "Data Supplier berhasil dihapus.";
+        $query = "DELETE FROM supplier WHERE id_supplier = '$id'";
+        $result = mysqli_query($koneksi, $query);
+
+        if ($result) {    
+            header("location: ../datasupplier.php");
         } else {
-            echo mysqli_error($koneksi);
+            echo "Error: " . mysqli_error($conn);
         }
-        mysqli_stmt_close($stmt);
-    } else {
-        echo mysqli_error($koneksi);
     }
-} else {
-    echo "Data Supplier gagal dihapus!";
 }
-
-mysqli_close($koneksi);
 ?>

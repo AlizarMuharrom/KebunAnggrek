@@ -51,6 +51,27 @@ while ($row = mysqli_fetch_assoc($result)) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-..." crossorigin="anonymous">
 
+    <style>
+        .tombol-tambah {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            width: 130px;
+            margin-left: 900px;
+            position: relative;
+            bottom: 50px;
+        }
+
+        .tombol-tambah:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 
 <body class="nav-md">
@@ -84,31 +105,16 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <div class="menu_section">
                             <h3>General</h3>
                             <ul class="nav side-menu">
-                                <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="index.php">Dashboard</a></li>
-                                    </ul>
+                                <li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
                                 </li>
-                                <li><a><i class="fa fa-leaf"></i> Anggrek <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="DataAnggrek.php">Data Anggrek </a></li>
-                                        <li><a href="formanggrek.php">Tambah Data</a></li>
 
-                                    </ul>
+                                <li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
                                 </li>
-                                <li><a><i class="fa fa-truck"></i> Supplier <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="datasupplier.php">Data Supplier </a></li>
-                                        <li><a href="formsupplier.php">Tambah Data</a></li>
+                                <li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
 
-                                    </ul>
                                 </li>
-                                <li><a><i class="fa fa-user"></i> Pelanggan <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="datapelanggan.php">Data Pelanggan </a></li>
-                                        <li><a href="formpelanggan.php">Tambah Data</a></li>
+                                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span"></span></a>
 
-                                    </ul>
                                 </li>
                                 <li><a><i class="fa fa-dollar"></i> Transaksi <span
                                             class="fa fa-chevron-down"></span></a>
@@ -143,8 +149,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right"
                                     aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="profile.php">Profile</a>
-                                    </a>
                                     <a class="dropdown-item" href="javascript:void(0);" onclick="logoutConfirmation();">
                                         <i class="fa fa-sign-out pull-right"></i> Log Out
                                     </a>
@@ -167,9 +171,10 @@ while ($row = mysqli_fetch_assoc($result)) {
             <!-- page content -->
             <div class="right_col" role="main">
                 <div class="">
-                    <div class="page-title">
+                    <div class="page-title" style="display: inline-block;">
                         <div class="title_left">
                             <h3>Data-data Supplier</h3>
+                            <button class="tombol-tambah"><a href="formsupplier.php" style="color: #333;">Tambah Data</a></button>
                         </div>
                     </div>
 
@@ -202,6 +207,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             <th style="width: 130px;">Action</th>
                                                         </tr>
                                                     </thead>
+                                                    <!-- Tambahkan formulir untuk setiap baris data dalam tabel -->
                                                     <tbody>
                                                         <?php
                                                         foreach ($dataSupplier as $row) {
@@ -213,20 +219,19 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             echo "<td>" . $row['no_telp'] . "</td>";
                                                             echo '<td>';
                                                             echo '<button id="edit_' . $no . '" type="button" name="edit" data-toggle="modal" data-target="#edit-modal" data-id="' . $row['id_supplier'] . '" class="btn btn-primary" data-id="' . $row['id_supplier'] . '">Edit</button>';
-                                                            echo '<button id="delete_' . $row['id_supplier'] . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $row['id_supplier'] . ')">Delete</button>';
+                                                            echo '<a href="delete/deletesupplier.php?id=' . $row['id_supplier'] . '&reqkarya=dell" title="Delete Supplier" class="btn btn-danger">
+                                                            <span> Delete</span> </a>';
                                                             echo '</td>';
                                                             echo "</tr>";
                                                             $no++;
                                                         }
                                                         ?>
                                                     </tbody>
+
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
-
-
-
 
                                     <!-- /page content -->
 
@@ -284,7 +289,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                             </script>
 
                             <script>
-                                function deleteData(id) {
+                                function deleteData(id_supplier) {
                                     console.log('Menghapus id_supplier: ' + id);
                                     if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
                                         $.ajax({
@@ -292,12 +297,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                                             url: 'delete/deletesupplier.php',
                                             data: { delete: 1, delete_id: id },
                                             success: function (response) {
-                                                if (response === 'success') {
-                                                    location.reload();
-                                                    alert('Data Supplier berhasil dihapus.');
-                                                } else {
-                                                    alert('Gagal menghapus data Supplier. Error: ' + response);
-                                                }
+                                                location.reload();
+                                                alert('Data Supplier berhasil dihapus.');
                                             },
                                             error: function () {
                                                 alert('Gagal menghapus data Supplier.');
@@ -305,9 +306,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         });
                                     }
                                 }
-
                             </script>
-
 
 </body>
 
@@ -324,7 +323,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <form action="update/updatesupplier.php" method="post" id="insert_form" enctype='multipart/form-data'>
 
                     <label>Id Supplier</label>
-                    <input type="text" name="id_supplier" id="id_supplier" class="form-control" readonly/>
+                    <input type="text" name="id_supplier" id="id_supplier" class="form-control" readonly />
                     <br />
                     <label>Nama</label>
                     <input type="text" name="nama" id="nama" class="form-control" />

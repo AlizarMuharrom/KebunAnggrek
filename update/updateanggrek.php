@@ -14,7 +14,7 @@ if (isset($_POST['update'])) {
 
     if ($result) {
         header("Location: ../DataAnggrek.php");
-        exit(); // Pastikan untuk keluar setelah pengalihan
+        exit();
     } else {
         echo "Gagal mengupdate data Anggrek: " . mysqli_error($koneksi);
     }

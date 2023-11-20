@@ -3,15 +3,15 @@ require_once("../koneksi.php");
 
 if (isset($_POST['delete'])) {
     $id = $_POST['delete_id'];
-    $query = "DELETE FROM anggrek WHERE id_anggrek = ?";
+    $query = "DELETE FROM pelanggan WHERE id_pelanggan = ?";
     $stmt = mysqli_prepare($koneksi, $query);
 
     if ($stmt) {
         mysqli_stmt_bind_param($stmt, "i", $id);
         if (mysqli_stmt_execute($stmt)) {
-            echo "Data Anggrek berhasil dihapus.";
+            echo "Data Pelanggan berhasil dihapus.";
         } else {
-            echo "Gagal menghapus data Anggrek: " . mysqli_error($koneksi);
+            echo "Gagal menghapus data Pelanggan: " . mysqli_error($koneksi);
         }
         mysqli_stmt_close($stmt);
     } else {

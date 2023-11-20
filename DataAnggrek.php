@@ -50,6 +50,28 @@ while ($row = mysqli_fetch_assoc($result)) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     integrity="sha384-..." crossorigin="anonymous">
 
+    <style>
+
+        .tombol-tambah {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            width: 130px;
+            margin-left: 900px;
+            position: relative;
+            bottom: 50px;
+        }
+
+        .tombol-tambah:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 
 <body class="nav-md">
@@ -58,7 +80,7 @@ while ($row = mysqli_fetch_assoc($result)) {
       <div class="col-md-3 left_col">
         <div class="left_col scroll-view">
           <div class="navbar nav_title" style="border: 0;">
-            <a href="index.php" class="site_title"><i class="fa fa-seedling"></i> <span>Kebun Anggrek</span></a>
+            <a href="index.php" class="site_title"><i class="fa fa-leaf"></i> <span>Kebun Anggrek</span></a>
           </div>
 
           <div class="clearfix"></div>
@@ -79,44 +101,28 @@ while ($row = mysqli_fetch_assoc($result)) {
 
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-            <div class="menu_section">
-              <h3>General</h3>
-              <ul class="nav side-menu">
-                <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="index.php">Dashboard</a></li>
-                  </ul>
-                </li>
-                <li><a><i class="fa fa-leaf"></i> Anggrek <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="DataAnggrek.php">Data Anggrek </a></li>
-                    <li><a href="formanggrek.php">Tambah Data</a></li>
+						<div class="menu_section">
+							<h3>General</h3>
+							<ul class="nav side-menu">
+								<li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
+								</li>
 
-                  </ul>
-                </li>
-                <li><a><i class="fa fa-truck"></i> Supplier <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="datasupplier.php">Data Supplier </a></li>
-                    <li><a href="formsupplier.php">Tambah Data</a></li>
-
-                  </ul>
-                </li>
-                <li><a><i class="fa fa-user"></i> Pelanggan <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="datapelanggan.php">Data Pelanggan </a></li>
-                    <li><a href="formpelanggan.php">Tambah Data</a></li>
-
-                  </ul>
-                </li>
-                <li><a><i class="fa fa-dollar"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="datatransaksi.php">Data Transaksi</a></li>
-                    <li><a href="Transaksi.php">Form Transaksi</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </div>
+								<li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
+								</li>
+								<li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
+								</li>
+								<li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
+								</li>
+								<li><a><i class="fa fa-dollar"></i> Transaksi <span
+											class="fa fa-chevron-down"></span></a>
+									<ul class="nav child_menu">
+										<li><a href="datatransaksi.php">Data Transaksi</a></li>
+										<li><a href="Transaksi.php">Form Transaksi</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
           <!-- /sidebar menu -->
 
           <!-- /menu footer buttons -->
@@ -139,8 +145,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                   <img src="anggrek-ungu.jpeg" alt=""> Anggrek
                 </a>
                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="profile.php">Profile</a>
-                  </a>
                   <a class="dropdown-item" href="javascript:void(0);" onclick="logoutConfirmation();">
                     <i class="fa fa-sign-out pull-right"></i> Log Out
                   </a>
@@ -164,9 +168,10 @@ while ($row = mysqli_fetch_assoc($result)) {
       <!-- page content -->
       <div class="right_col" role="main">
         <div class="">
-          <div class="page-title">
+          <div class="page-title" style="display: inline-block;">
             <div class="title_left">
               <h3>Data-data tanaman Anggrek</h3>
+              <button class="tombol-tambah"><a href="formanggrek.php" style="color: #333;">Tambah Data</a></button>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -193,7 +198,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               <th>Jenis</th>
                               <th>Harga</th>
                               <th>Stok</th>
-                              <th style="width: 180px;">Action</th>
+                              <th style="width: 130px;">Action</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -253,7 +258,6 @@ while ($row = mysqli_fetch_assoc($result)) {
 
               <!-- Custom Theme Scripts -->
               <script src="admin/build/js/custom.min.js"></script>
-
 
               <script>
                 $(document).on('click', '[data-toggle="modal"]', function () {

@@ -50,6 +50,27 @@ while ($row = mysqli_fetch_assoc($result)) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-admin." crossorigin="anonymous">
 
+    <style>
+        .tombol-tambah {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            width: 130px;
+            margin-left: 900px;
+            position: relative;
+            bottom: 50px;
+        }
+
+        .tombol-tambah:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 
 <body class="nav-md">
@@ -58,7 +79,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><i class="fa fa-seedling"></i> <span>Kebun
+                        <a href="index.php" class="site_title"><i class="fa fa-leaf"></i> <span>Kebun
                                 Anggrek</span></a>
                     </div>
 
@@ -83,31 +104,17 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <div class="menu_section">
                             <h3>General</h3>
                             <ul class="nav side-menu">
-                                <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="index.php">Dashboard</a></li>
-                                    </ul>
+                                <li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
                                 </li>
-                                <li><a><i class="fa fa-leaf"></i> Anggrek <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="DataAnggrek.php">Data Anggrek </a></li>
-                                        <li><a href="formanggrek.php">Tambah Data</a></li>
 
-                                    </ul>
+                                <li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
+
                                 </li>
-                                <li><a><i class="fa fa-truck"></i> Supplier <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="datasupplier.php">Data Supplier </a></li>
-                                        <li><a href="formsupplier.php">Tambah Data</a></li>
+                                <li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
 
-                                    </ul>
                                 </li>
-                                <li><a><i class="fa fa-user"></i> Pelanggan <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="datapelanggan.php">Data Pelanggan </a></li>
-                                        <li><a href="formpelanggan.php">Tambah Data</a></li>
+                                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
 
-                                    </ul>
                                 </li>
                                 <li><a><i class="fa fa-dollar"></i> Transaksi <span
                                             class="fa fa-chevron-down"></span></a>
@@ -142,8 +149,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right"
                                     aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="profile.php">Profile</a>
-                                    </a>
                                     <a class="dropdown-item" href="javascript:void(0);" onclick="logoutConfirmation();">
                                         <i class="fa fa-sign-out pull-right"></i> Log Out
                                     </a>
@@ -166,9 +171,11 @@ while ($row = mysqli_fetch_assoc($result)) {
             <!-- page content -->
             <div class="right_col" role="main">
                 <div class="">
-                    <div class="page-title">
+                    <div class="page-title" style="display: inline-block;">
                         <div class="title_left">
                             <h3>Data-data Pelanggan</h3>
+                            <button class="tombol-tambah"><a href="formpelanggan.php" style="color: #333;">Tambah
+                                    Data</a></button>
                         </div>
                     </div>
 
@@ -197,7 +204,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             <th>Nama</th>
                                                             <th>Alamat</th>
                                                             <th>No Telp</th>
-                                                            <th>Action</th>
+                                                            <th style="width: 130px;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -209,8 +216,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             echo "<td>" . $row['alamat'] . "</td>";
                                                             echo "<td>" . $row['no_telp'] . "</td>";
                                                             echo '<td>';
-                                                            echo '<button data-target="#edit-modal" data-toggle="modal" id="edit_' . $no . '" type="button" name="edit" class="btn btn-primary" onclick="editData(' . $no . ')">Edit</button>';
-                                                            echo ' <button id="delete_' . $no . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $no . ')">Delete</button>';
+                                                            echo '<button data-target="#edit-modal" data-toggle="modal" data-id="' . $row['id_pelanggan'] . '" type="button" name="edit" class="btn btn-primary">Edit</button>';
+                                                            echo ' <button id="delete_' . $row['id_pelanggan'] . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $row['id_pelanggan'] . ')">Delete</button>';
                                                             echo '</td>';
                                                             echo "</tr>";
                                                             $no++;
@@ -221,9 +228,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                             </div>
                                         </div>
                                     </div>
-
-
-
 
                                     <!-- /page content -->
 
@@ -265,6 +269,72 @@ while ($row = mysqli_fetch_assoc($result)) {
                             <!-- Custom Theme Scripts -->
                             <script src="admin/build/js/custom.min.js"></script>
 
+                            <script>
+                                $(document).on('click', 'button[name="edit"]', function () {
+                                    var id_pelanggan = $(this).data('id');
+                                    var row = $(this).closest('tr');
+                                    var nama_pelanggan = row.find('td:eq(1)').text();
+                                    var alamat = row.find('td:eq(2)').text();
+                                    var no_telp = row.find('td:eq(3)').text();
+
+                                    $('#id_pelanggan').val(id_pelanggan);
+                                    $('#nama_pelanggan').val(nama_pelanggan);
+                                    $('#alamat').val(alamat);
+                                    $('#no_telp').val(no_telp);
+                                });
+
+                                $(document).on('submit', '#insert_form', function (e) {
+                                    e.preventDefault();
+
+                                    var id_pelanggan = $('#id_pelanggan').val();
+                                    var nama_pelanggan = $('#nama_pelanggan').val();
+                                    var alamat = $('#alamat').val();
+                                    var no_telp = $('#no_telp').val();
+
+                                    $.ajax({
+                                        url: $(this).attr('action'),
+                                        method: $(this).attr('method'),
+                                        data: {
+                                            update: true,
+                                            id_pelanggan: id_pelanggan,
+                                            nama_pelanggan: nama_pelanggan,
+                                            alamat: alamat,
+                                            no_telp: no_telp
+                                        },
+                                        success: function (response) {
+                                            alert("Data Pelanggan berhasil diubah");
+
+                                            $('#edit-modal').modal('hide');
+
+                                            location.reload();
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.error(xhr.responseText);
+                                        }
+                                    });
+                                });
+                            </script>
+
+                            <script>
+                                function deleteData(id) {
+                                    console.log('Menghapus id_pelanggan: ' + id);
+                                    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: 'delete/deletepelanggan.php',
+                                            data: { delete: 1, delete_id: id },
+                                            success: function (response) {
+                                                location.reload();
+                                                alert('Data Pelanggan berhasil dihapus.');
+                                            },
+                                            error: function () {
+                                                alert('Gagal menghapus data Pelanggan.');
+                                            }
+                                        });
+                                    }
+                                }
+                            </script>
+
 </body>
 
 </html>
@@ -279,14 +349,17 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="modal-body">
                 <form action="update/updatepelanggan.php" method="post" id="insert_form" enctype='multipart/form-data'>
 
+                    <label>Id Pelanggan</label>
+                    <input type="text" name="id_pelanggan" id="id_pelanggan" class="form-control" readonly />
+                    <br />
                     <label>Nama Pelanggan</label>
-                    <input type="text" name="nama" id="nopol" class="form-control" />
+                    <input type="text" name="nama_pelanggan" id="nama_pelanggan" class="form-control" />
                     <br />
                     <label>Alamat</label>
-                    <input type="text" name="jenis" id="merk" class="form-control" />
+                    <input type="text" name="alamat" id="alamat" class="form-control" />
                     <br />
                     <label>No Telp</label>
-                    <input type="text" name="harga" id="type" class="form-control">
+                    <input type="text" name="no_telp" id="no_telp" class="form-control">
                     <br />
                     <input type="submit" name="update" id="update" value="Update" class="btn btn-success"
                         onMouseOver="this.style.backgroundColor='#00796b'"

@@ -6,7 +6,7 @@ if (!empty($_POST)) {
     $nama = $_POST["namasupplier"];
     $alamat = $_POST["alamat"];
     $hp = $_POST["nomer"];
-
+    
     $query = "INSERT INTO supplier(id_supplier, nama_supplier, alamat, no_telp) 
         VALUES ('$id','$nama','$alamat','$hp')";
 

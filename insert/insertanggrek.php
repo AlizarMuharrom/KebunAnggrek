@@ -1,5 +1,5 @@
 <?php
-require_once("..\koneksi.php");
+require_once("koneksi.php");
 
 if (!empty($_POST)) {
     $supplier = $_POST["id-supplier"];
@@ -11,14 +11,25 @@ if (!empty($_POST)) {
     $query = "INSERT INTO anggrek(nama_anggrek, jenis, harga, stok, id_supplier) 
         VALUES ('$namaanggrek','$jenis','$harga','$stok','$supplier')";
 
-    $result = mysqli_query($koneksi, $query);
-
-    if ($result) {
-        echo "Data berhasil ditambah!";
-        header("location: ../formanggrek.php");
+    if (mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT id_supplier from supplier where id_supplier = '$supplier'")) == null) {
+        ?>
+        <script type='module'>
+            alert('Id Supplier tidak ditemukan');
+        </script>
+        <?php
     } else {
-        echo "Data gagal ditambahkan!";
-        echo "Error : " . mysqli_error($koneksi);
+        $result = mysqli_query($koneksi, $query);
+
+        if ($result) {
+            ?>
+            <script type='module'>
+                alert("Data berhasil ditambah!");
+            </script>
+            <?php
+        } else {
+            echo "Data gagal ditambahkan!";
+            echo "Error : " . mysqli_error($koneksi);
+        }
     }
 }
 ?>

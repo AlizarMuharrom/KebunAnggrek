@@ -1,5 +1,5 @@
 <?php
-require_once("..\koneksi.php");
+require_once("koneksi.php");
 
 if (!empty($_POST)) {
     $nama = $_POST["nama"];
@@ -12,8 +12,11 @@ if (!empty($_POST)) {
     $result = mysqli_query($koneksi, $query);
 
     if ($result) {
-        echo "Data berhasil ditambah!";
-        header("location: ../formpelanggan.php");
+        ?>
+            <script type="module">
+                alert("Data Pelanggan berhasil ditambah");
+            </script>
+        <?php
     } else {
         echo "Data gagal ditambahkan!";
         echo "Error : " . mysqli_error($koneksi);
