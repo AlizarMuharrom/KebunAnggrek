@@ -1,3 +1,49 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+	header("Location: login.php?login_section=signin");
+	exit();
+}
+
+function generatepembelian()
+{
+  try {
+    // Sambungkan ke database Anda
+    $conn = mysqli_connect("localhost", "root", "", "anggrek");
+
+    // Periksa koneksi
+    if (mysqli_connect_errno()) {
+      echo "Koneksi ke database gagal: " . mysqli_connect_error();
+      exit();
+    }
+
+    // Query untuk mengambil data pelanggan dan mengurutkannya berdasarkan id_pelanggan secara ascending
+    $sql = "SELECT * FROM pembelian ORDER BY id_pembelian ASC";
+    $result = mysqli_query($conn, $sql);
+
+    $nextNumber = 1;
+
+    while ($row = mysqli_fetch_assoc($result)) {
+      $NoJual = substr($row['id_pembelian'], 3);
+      if (!empty($NoJual)) {
+        $nextNumber = max($nextNumber, intval($NoJual) + 1);
+      }
+    }
+
+    $AN = sprintf("%04d", $nextNumber);
+    $newID = "PML" . $AN;
+
+    // Tutup koneksi ke database
+    mysqli_close($conn);
+
+    return $newID;
+  } catch (Exception $e) {
+    echo "Terjadi kesalahan: " . $e->getMessage();
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,30 +108,27 @@
 
 					<!-- sidebar menu -->
 					<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                        <div class="menu_section">
-                            <h3>General</h3>
-                            <ul class="nav side-menu">
-                                <li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
-                                </li>
+						<div class="menu_section">
+							<h3>General</h3>
+							<ul class="nav side-menu">
+								<li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
+								</li>
 
-                                <li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
-                                </li>
-                                <li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
+								<li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
+								</li>
+								<li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
 
-                                </li>
-                                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span"></span></a>
+								</li>
+								<li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span"></span></a>
 
-                                </li>
-                                <li><a><i class="fa fa-dollar"></i> Transaksi <span
-                                            class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="datatransaksi.php">Data Transaksi</a></li>
-                                        <li><a href="Transaksi.php">Form Transaksi</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+								</li>
+								<li><a href="datatransaksi.php"><i class="fa fa-money"></i> Transaksi <span></span></a>
+								</li>
+								<li><a href="laporan.php"><i class="fa fa-book"></i> Laporan <span></span></a>
+								</li>
+							</ul>
+						</div>
+					</div>
 					<!-- /sidebar menu -->
 
 					<!-- /menu footer buttons -->
@@ -159,107 +202,153 @@
 											</label>
 											<?php require_once('insert/insertanggrek.php') ?>
 											<div class="col-md-6 col-sm-6 ">
-												<input type="text" id="namaanggrek" required name="id-supplier"
-													class="form-control ">
-											</div>
-										</div>
+												<select name="id-supplier" id="id-supplier" class="form-control">
+													<?php
+													$koneksi = mysqli_connect("localhost", "root", "", "anggrek");
+													if (mysqli_connect_errno()) {
+														echo "Koneksi ke database gagal: " . mysqli_connect_error();
+														exit();
+													}
+													$query = "SELECT id_supplier, nama_supplier FROM supplier"; // Perbaikan nama kolom
+													$result = mysqli_query($koneksi, $query);
 
-										<div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align"
-												for="namaanggrek">Nama Anggrek <span class="required"></span>
-											</label>
-											<div class="col-md-6 col-sm-6 ">
-												<input type="text" id="namaanggrek" required name="namaanggrek"
-													class="form-control ">
+													while ($row = mysqli_fetch_assoc($result)) {
+														echo "<option value='" . $row['id_supplier'] . "'>" . $row['id_supplier'] . " - " . $row['nama_supplier'] . "</option>"; // Perbaikan nama kolom
+													}
+													?>
+												</select>
 											</div>
 										</div>
 										<div class="item form-group">
 											<label class="col-form-label col-md-3 col-sm-3 label-align"
-												for="jenis">Jenis <span class="required"></span>
+												for="namaanggrek">ID Pembelian <span ></span>
 											</label>
 											<div class="col-md-6 col-sm-6 ">
-												<input type="text" id="jenis" name="jenis" required
-													class="form-control">
+												<input type="text" id="idpembelian"  name="idpembelian"
+													class="form-control" value="<?php echo generatepembelian();?>" readonly>
+											</div>
+										</div>
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align"
+												for="namaanggrek">ID Anggrek <span class=""></span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input type="text" id="idanggrek"  name="idanggrek"
+													class="form-control ">
 											</div>
 										</div>
 										<div class="item form-group">
 											<label for="harga"
-												class="col-form-label col-md-3 col-sm-3 label-align">Harga</label>
+												class="col-form-label col-md-3 col-sm-3 label-align">Tanggal</label>
 											<div class="col-md-6 col-sm-6 ">
-												<input id="harga" class="form-control" type="text" name="harga"
+												<input id="tanggal" class="form-control" type="text" name="tanggal"
 													required>
+													<script src="assets/js/scripts.js"></script>
 											</div>
 										</div>
-
-										<<div class="item form-group" style="margin-top: -18px;">
-											<label for="stok"
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align"
+												for="namaanggrek">Nama Anggrek <span class=""></span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input type="text" id="nama" name="nama" class="form-control ">
+											</div>
+										</div>
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align"
+												for="namaanggrek">Harga <span class=""></span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input type="text" id="harga" name="harga"
+													class="form-control ">
+											</div>
+										</div>
+										<div class="item form-group">
+											<label class="col-form-label col-md-3 col-sm-3 label-align"
+												for="namaanggrek">Jumlah <span class=""></span>
+											</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input type="text" id="jumlah"  name="jumlah"
+													class="form-control ">
+											</div>
+										</div>
+										<div class="item form-group">
+											<label for="harga"
+												class="col-form-label col-md-3 col-sm-3 label-align">Total</label>
+											<div class="col-md-6 col-sm-6 ">
+												<input id="total" class="form-control" type="number" name="total"
+													>
+											</div>
+										</div>
+										<div class="item form-group">
+											<label for="harga"
 												class="col-form-label col-md-3 col-sm-3 label-align">Stok</label>
 											<div class="col-md-6 col-sm-6 ">
-												<input id="stok" class="form-control" type="text" name="stok" required>
+												<input id="stok" class="form-control" type="number" name="stok"
+													>
 											</div>
-
+										</div>
+										<div class="ln_solid"></div>
+										<div class="item form-group">
+											<div class="col-md-6 col-sm-6 offset-md-3">
+												<button class="btn btn-primary" type="reset">Reset</button>
+												<button type="submit" class="btn btn-success"name="submit">Submit</button>
+												<button type="submit" class="btn btn-success"name="tambah">tambah</button>
+											</div>
+										</div>
+									</form>
 								</div>
-								<div class="ln_solid"></div>
-								<div class="item form-group">
-									<div class="col-md-6 col-sm-6 offset-md-3">
-										<button class="btn btn-primary" type="button">Cancel</button>
-										<button class="btn btn-primary" type="reset">Reset</button>
-										<button type="submit" class="btn btn-success" name="submit">Submit</button>
-									</div>
-								</div>
-								</form>
 							</div>
 						</div>
 					</div>
+
+					<!-- /page content -->
+
+					<!-- footer content -->
+					<footer>
+						<div class="pull-right"><a href="https://colorlib.com"></a>
+						</div>
+						<div class="clearfix"></div>
+					</footer>
+					<!-- /footer content -->
 				</div>
-
-				<!-- /page content -->
-
-				<!-- footer content -->
-				<footer>
-					<div class="pull-right"><a href="https://colorlib.com"></a>
-					</div>
-					<div class="clearfix"></div>
-				</footer>
-				<!-- /footer content -->
 			</div>
-		</div>
 
-		<!-- jQuery -->
-		<script src="admin/vendors/jquery/dist/jquery.min.js"></script>
-		<!-- Bootstrap -->
-		<script src="admin/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-		<!-- FastClick -->
-		<script src="admin/vendors/fastclick/lib/fastclick.js"></script>
-		<!-- NProgress -->
-		<script src="admin/vendors/nprogress/nprogress.js"></script>
-		<!-- bootstrap-progressbar -->
-		<script src="admin/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-		<!-- iCheck -->
-		<script src="admin/vendors/iCheck/icheck.min.js"></script>
-		<!-- bootstrap-daterangepicker -->
-		<script src="admin/vendors/moment/min/moment.min.js"></script>
-		<script src="admin/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-		<!-- bootstrap-wysiwyg -->
-		<script src="admin/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
-		<script src="admin/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
-		<script src="admin/vendors/google-code-prettify/src/prettify.js"></script>
-		<!-- jQuery Tags Input -->
-		<script src="admin/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
-		<!-- Switchery -->
-		<script src="admin/vendors/switchery/dist/switchery.min.js"></script>
-		<!-- Select2 -->
-		<script src="admin/vendors/select2/dist/js/select2.full.min.js"></script>
-		<!-- Parsley -->
-		<script src="admin/vendors/parsleyjs/dist/parsley.min.js"></script>
-		<!-- Autosize -->
-		<script src="admin/vendors/autosize/dist/autosize.min.js"></script>
-		<!-- jQuery autocomplete -->
-		<script src="admin/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
-		<!-- starrr -->
-		<script src="admin/vendors/starrr/dist/starrr.js"></script>
-		<!-- Custom Theme Scripts -->
-		<script src="admin/build/js/custom.min.js"></script>
+			<!-- jQuery -->
+			<script src="admin/vendors/jquery/dist/jquery.min.js"></script>
+			<!-- Bootstrap -->
+			<script src="admin/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+			<!-- FastClick -->
+			<script src="admin/vendors/fastclick/lib/fastclick.js"></script>
+			<!-- NProgress -->
+			<script src="admin/vendors/nprogress/nprogress.js"></script>
+			<!-- bootstrap-progressbar -->
+			<script src="admin/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+			<!-- iCheck -->
+			<script src="admin/vendors/iCheck/icheck.min.js"></script>
+			<!-- bootstrap-daterangepicker -->
+			<script src="admin/vendors/moment/min/moment.min.js"></script>
+			<script src="admin/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+			<!-- bootstrap-wysiwyg -->
+			<script src="admin/vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js"></script>
+			<script src="admin/vendors/jquery.hotkeys/jquery.hotkeys.js"></script>
+			<script src="admin/vendors/google-code-prettify/src/prettify.js"></script>
+			<!-- jQuery Tags Input -->
+			<script src="admin/vendors/jquery.tagsinput/src/jquery.tagsinput.js"></script>
+			<!-- Switchery -->
+			<script src="admin/vendors/switchery/dist/switchery.min.js"></script>
+			<!-- Select2 -->
+			<script src="admin/vendors/select2/dist/js/select2.full.min.js"></script>
+			<!-- Parsley -->
+			<script src="admin/vendors/parsleyjs/dist/parsley.min.js"></script>
+			<!-- Autosize -->
+			<script src="admin/vendors/autosize/dist/autosize.min.js"></script>
+			<!-- jQuery autocomplete -->
+			<script src="admin/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>
+			<!-- starrr -->
+			<script src="admin/vendors/starrr/dist/starrr.js"></script>
+			<!-- Custom Theme Scripts -->
+			<script src="admin/build/js/custom.min.js"></script>
 
 </body>
 

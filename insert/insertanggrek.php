@@ -3,13 +3,19 @@ require_once("koneksi.php");
 
 if (!empty($_POST)) {
     $supplier = $_POST["id-supplier"];
-    $namaanggrek = $_POST["namaanggrek"];
-    $jenis = $_POST["jenis"];
+    $namaanggrek = $_POST["nama"];
+    $idanggrek = $_POST["idanggrek"];
     $harga = $_POST["harga"];
     $stok = $_POST["stok"];
+    $idpembelian = $_POST["idpembelian"];
+    $tanggal = $_POST["tanggal"];
+    $jumlah = $_POST["jumlah"];
+    $total = $_POST["total"];
+    
 
-    $query = "INSERT INTO anggrek(nama_anggrek, jenis, harga, stok, id_supplier) 
-        VALUES ('$namaanggrek','$jenis','$harga','$stok','$supplier')";
+    $query = "INSERT INTO anggrek(nama_anggrek, id_anggrek , harga, stok, id_supplier) VALUES ('$namaanggrek','$idanggrek','$harga','$stok','$supplier')";
+    $query1 = "INSERT INTO pembelian(id_pembelian, tanggal_pembelian, jumlah, total_harga) VALUES ('$idpembelian',CURDATE(),'$jumlah','$total')";
+    $query2 = "INSERT INTO detail_pembelian(id_pembelian, id_anggrek) VALUES ('$idpembelian','$idanggrek')";
 
     if (mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT id_supplier from supplier where id_supplier = '$supplier'")) == null) {
         ?>
@@ -18,7 +24,9 @@ if (!empty($_POST)) {
         </script>
         <?php
     } else {
-        $result = mysqli_query($koneksi, $query);
+        $result = mysqli_query($koneksi, $query1);
+        $result2 = mysqli_query($koneksi, $query);
+        $result3 = mysqli_query($koneksi, $query2);
 
         if ($result) {
             ?>

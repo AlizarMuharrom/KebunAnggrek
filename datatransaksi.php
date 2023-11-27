@@ -1,3 +1,40 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: login.php?login_section=signin");
+    exit();
+}
+
+?>
+
+<?php
+require_once("koneksi.php");
+
+$bulan_tahun_saat_ini = date('Y-m');
+
+$query = "SELECT penjualan.id_penjualan, penjualan.tanggal_penjualan, pelanggan.nama_pelanggan, anggrek.nama_anggrek, penjualan.jumlah, penjualan.total_harga FROM penjualan
+JOIN detail_penjualan ON penjualan.id_penjualan = detail_penjualan.id_penjualan
+JOIN anggrek ON detail_penjualan.id_anggrek = anggrek.id_anggrek
+JOIN pelanggan ON penjualan.id_pelanggan = pelanggan.id_pelanggan
+WHERE DATE_FORMAT(penjualan.tanggal_penjualan, '%Y-%m') = '$bulan_tahun_saat_ini';";
+
+
+$result = mysqli_query($koneksi, $query);
+
+$no = 1;
+
+if (!$result) {
+    die("Kueri database gagal");
+}
+
+$datatransaksi = array();
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $datatransaksi[] = $row;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,6 +69,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-admin." crossorigin="anonymous">
 
+    <style>
+        .tombol-tambah {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            width: 130px;
+            margin-left: 900px;
+            position: relative;
+            bottom: 50px;
+        }
+
+        .tombol-tambah:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 
 <body class="nav-md">
@@ -62,31 +120,29 @@
 
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-						<div class="menu_section">
-							<h3>General</h3>
-							<ul class="nav side-menu">
-								<li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
+                        <div class="menu_section">
+                            <h3>General</h3>
+                            <ul class="nav side-menu">
+                                <li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
+                                </li>
+
+                                <li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
+
+                                </li>
+                                <li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
+
+                                </li>
+                                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
+
+                                </li>
+                                <li><a href="datatransaksi.php"><i class="fa fa-money"></i> Transaksi <span></span></a>
+                                </li>
+                                <li><a href="laporan.php"><i class="fa fa-book"></i> Laporan <span></span></a>
 								</li>
 
-								<li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
-
-								</li>
-								<li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
-
-								</li>
-								<li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
-
-								</li>
-								<li><a><i class="fa fa-dollar"></i> Transaksi <span
-											class="fa fa-chevron-down"></span></a>
-									<ul class="nav child_menu">
-										<li><a href="datatransaksi.php">Data Transaksi</a></li>
-										<li><a href="Transaksi.php">Form Transaksi</a></li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</div>
+                            </ul>
+                        </div>
+                    </div>
                     <!-- /sidebar menu -->
 
                     <!-- /menu footer buttons -->
@@ -132,9 +188,11 @@
             <!-- page content -->
             <div class="right_col" role="main">
                 <div class="">
-                    <div class="page-title">
+                    <div class="page-title" style="display: inline-block;">
                         <div class="title_left">
-                            <h3>Data-data Transaksi <h3>
+                            <h3>Data-data Transaksi</h3>
+                            <button class="tombol-tambah"><a href="Transaksi.php" style="color: #333;" class="a-tambah">Tambah
+                                    Data</a></button>
                         </div>
                     </div>
 
@@ -159,34 +217,37 @@
                                                     style="width:100%">
                                                     <thead>
                                                         <tr>
-                                                            <th>
-                                                                <center>No Penjualan</center>
-                                                            </th>
-                                                            <th>
-                                                                <center>Tanggal Penjualan</center>
-                                                            </th>
-                                                            <th>
-                                                                <center>Nama Pelanggan</center>
-                                                            </th>
-                                                            <th>
-                                                                <center>Nama Anggrek</center>
-                                                            </th>
-                                                            <th>
-                                                                <center>Jumlah</center>
-                                                            </th>
-                                                            <th>
-                                                                <center>Total Harga</center>
-                                                            </th>
+                                                            <th>No Penjualan</th>
+                                                            <th>Tgl Penjualan</th>
+                                                            <th>Nama Pelanggan</th>
+                                                            <th>Nama Anggrek</th>
+                                                            <th>Jumlah</th>
+                                                            <th>Total Harga</th>
+                                                            <th style="width: 50px;">Action</th>
                                                         </tr>
                                                     </thead>
+                                                    <tbody>
+                                                        <?php
+                                                        foreach ($datatransaksi as $row) {
+                                                            echo "<tr>";
+                                                            echo "<td>" . $no . "</td>";
+                                                            echo "<td>" . $row['tanggal_penjualan'] . "</td>";
+                                                            echo "<td>" . $row['nama_pelanggan'] . "</td>";
+                                                            echo "<td>" . $row['nama_anggrek'] . "</td>";
+                                                            echo "<td>" . $row['jumlah'] . "</td>";
+                                                            echo "<td>" . $row['total_harga'] . "</td>";
+                                                            echo '<td>';
+                                                            echo '<button data-target="#edit-modal" data-toggle="modal" data-id="' . $row['id_penjualan'] . '" type="button" name="edit" class="btn btn-primary">Edit</button>';
+                                                            echo '</td>';
+                                                            echo "</tr>";
+                                                            $no++;
+                                                        }
+                                                        ?>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
-
-
-
 
                                     <!-- /page content -->
 
@@ -227,6 +288,66 @@
 
                             <!-- Custom Theme Scripts -->
                             <script src="admin/build/js/custom.min.js"></script>
+
+                            <script>
+                                function deleteData(id_penjualan) {
+                                    console.log('Menghapus id_penjualan: ' + id_penjualan);
+                                    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: 'delete/delete_transaksi.php', // Sesuaikan dengan lokasi file delete
+                                            data: { delete: 1, delete_id: id_penjualan },
+                                            success: function (response) {
+                                                location.reload();
+                                                alert('Data Transaksi berhasil dihapus.');
+                                            },
+                                            error: function () {
+                                                alert('Gagal menghapus data Transaksi.');
+                                            }
+                                        });
+                                    }
+                                }
+                            </script>
+
+                            <script>
+                                $(document).on('click', 'button[name="edit"]', function () {
+                                    var id_penjualan = $(this).data('id');
+                                    var row = $(this).closest('tr');
+                                    var tanggal = row.find('td:eq(1)').text(); // Sesuaikan dengan indeks kolom yang benar
+                                    var nama_pelanggan = row.find('td:eq(2)').text();
+                                    var nama_anggrek = row.find('td:eq(3)').text();
+                                    var jumlah = row.find('td:eq(4)').text();
+                                    var total_harga = row.find('td:eq(5)').text();
+
+                                    $('#id_penjualan').val(id_penjualan);
+                                    $('#tangal_penjualan').val(tanggal);
+                                    $('#nama_pelanggan').val(nama_pelanggan);
+                                    $('#nama_anggrek').val(nama_anggrek);
+                                    $('#jumlah').val(jumlah);
+                                    $('#total_harga').val(total_harga);
+                                });
+                            </script>
+
+
+                            <script>
+                                function deleteData(id_supplier) {
+                                    console.log('Menghapus id_supplier: ' + id);
+                                    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: 'delete/deletesupplier.php',
+                                            data: { delete: 1, delete_id: id },
+                                            success: function (response) {
+                                                location.reload();
+                                                alert('Data Supplier berhasil dihapus.');
+                                            },
+                                            error: function () {
+                                                alert('Gagal menghapus data Supplier.');
+                                            }
+                                        });
+                                    }
+                                }
+                            </script>
 
 </body>
 

@@ -1,3 +1,93 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+  header("Location: login.php?login_section=signin");
+  exit();
+}
+
+?>
+
+<?php
+// Fungsi generateID()
+function generateID()
+{
+  try {
+    // Sambungkan ke database Anda
+    $conn = mysqli_connect("localhost", "root", "", "anggrek");
+
+    // Periksa koneksi
+    if (mysqli_connect_errno()) {
+      echo "Koneksi ke database gagal: " . mysqli_connect_error();
+      exit();
+    }
+
+    // Query untuk mengambil data pelanggan dan mengurutkannya berdasarkan id_pelanggan secara ascending
+    $sql = "SELECT * FROM pelanggan ORDER BY id_pelanggan ASC";
+    $result = mysqli_query($conn, $sql);
+
+    $nextNumber = 1;
+
+    while ($row = mysqli_fetch_assoc($result)) {
+      $NoJual = substr($row['id_pelanggan'], 3);
+      if (!empty($NoJual)) {
+        $nextNumber = max($nextNumber, intval($NoJual) + 1);
+      }
+    }
+
+    $AN = sprintf("%04d", $nextNumber);
+    $newID = "PNG" . $AN;
+
+    // Tutup koneksi ke database
+    mysqli_close($conn);
+
+    return $newID;
+  } catch (Exception $e) {
+    echo "Terjadi kesalahan: " . $e->getMessage();
+  }
+}
+
+// Panggil fungsi generateID() untuk mendapatkan ID baru
+$kodeauto = generateID();
+function generatepenjualan()
+{
+  try {
+    // Sambungkan ke database Anda
+    $conn = mysqli_connect("localhost", "root", "", "anggrek");
+
+    // Periksa koneksi
+    if (mysqli_connect_errno()) {
+      echo "Koneksi ke database gagal: " . mysqli_connect_error();
+      exit();
+    }
+
+    // Query untuk mengambil data pelanggan dan mengurutkannya berdasarkan id_pelanggan secara ascending
+    $sql = "SELECT * FROM penjualan ORDER BY id_penjualan ASC";
+    $result = mysqli_query($conn, $sql);
+
+    $nextNumber = 1;
+
+    while ($row = mysqli_fetch_assoc($result)) {
+      $NoJual = substr($row['id_penjualan'], 3);
+      if (!empty($NoJual)) {
+        $nextNumber = max($nextNumber, intval($NoJual) + 1);
+      }
+    }
+
+    $AN = sprintf("%04d", $nextNumber);
+    $newID = "PNJ" . $AN;
+
+    // Tutup koneksi ke database
+    mysqli_close($conn);
+
+    return $newID;
+  } catch (Exception $e) {
+    echo "Terjadi kesalahan: " . $e->getMessage();
+  }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,14 +153,9 @@
                 <li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
 
                 </li>
-                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
-
-                </li>
-                <li><a><i class="fa fa-dollar"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
-                  <ul class="nav child_menu">
-                    <li><a href="datatransaksi.php">Data Transaksi</a></li>
-                    <li><a href="Transaksi.php">Form Transaksi</a></li>
-                  </ul>
+                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a></li>
+                <li><a href="datatransaksi.php"><i class="fa fa-money"></i> Transaksi <span></span></a></li>
+                <li><a href="laporan.php"><i class="fa fa-book"></i> Laporan <span></span></a>
                 </li>
               </ul>
             </div>
@@ -120,7 +205,7 @@
         <div class="">
           <div class="page-title">
             <div class="title_left">
-              <h3>Form Wizards</h3>
+              <h3>Form Transaksi</h3>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -130,384 +215,171 @@
             <div class="col-md-12 col-sm-12 ">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Form Wizards <small>Sessions</small></h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i
-                          class="fa fa-wrench"></i></a>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Settings 1</a>
-                        </li>
-                        <li><a href="#">Settings 2</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                  </ul>
+                  <h2>Input Data Transaksi</h2>
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
 
 
                   <!-- Smart Wizard -->
-                  <p>This is a basic form wizard example that inherits the colors from the selected scheme.</p>
-                  <div id="wizard" class="form_wizard wizard_horizontal">
-                    <ul class="wizard_steps">
-                      <li>
-                        <a href="#step-1">
-                          <span class="step_no">1</span>
-                          <span class="step_descr">
-                            Step 1<br />
-                            <small>Step 1 description</small>
-                          </span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#step-2">
-                          <span class="step_no">2</span>
-                          <span class="step_descr">
-                            Step 2<br />
-                            <small>Step 2 description</small>
-                          </span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#step-3">
-                          <span class="step_no">3</span>
-                          <span class="step_descr">
-                            Step 3<br />
-                            <small>Step 3 description</small>
-                          </span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#step-4">
-                          <span class="step_no">4</span>
-                          <span class="step_descr">
-                            Step 4<br />
-                            <small>Step 4 description</small>
-                          </span>
-                        </a>
-                      </li>
-                    </ul>
-                    <div id="step-1">
-                      <form class="form-horizontal form-label-left">
 
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">First Name <span
-                              class="required">*</span>
-                          </label>
-                          <div class="col-md-6 col-sm-6 ">
-                            <input type="text" id="first-name" required="required" class="form-control  ">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Last Name <span
-                              class="required">*</span>
-                          </label>
-                          <div class="col-md-6 col-sm-6 ">
-                            <input type="text" id="last-name" name="last-name" required="required"
-                              class="form-control ">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Middle Name /
-                            Initial</label>
-                          <div class="col-md-6 col-sm-6 ">
-                            <input id="middle-name" class="form-control col" type="text" name="middle-name">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
-                          <div class="col-md-6 col-sm-6 ">
-                            <div id="gender" class="btn-group" data-toggle="buttons">
-                              <label class="btn btn-secondary" data-toggle-class="btn-primary"
-                                data-toggle-passive-class="btn-secondary">
-                                <input type="radio" name="gender" value="male" class="join-btn"> &nbsp; Male &nbsp;
-                              </label>
-                              <label class="btn btn-primary" data-toggle-class="btn-primary"
-                                data-toggle-passive-class="btn-secondary">
-                                <input type="radio" name="gender" value="female" class="join-btn"> Female
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align">Date Of Birth <span
-                              class="required">*</span>
-                          </label>
-                          <div class="col-md-6 col-sm-6 ">
-                            <input id="birthday" class="date-picker form-control" required="required" type="text">
-                          </div>
-                        </div>
-
-                      </form>
-
-                    </div>
-                    <div id="step-2">
-                      <h2 class="StepTitle">Step 2 Content</h2>
-                      <p>
-                        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                        dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                        fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                        deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <div id="step-3">
-                      <h2 class="StepTitle">Step 3 Content</h2>
-                      <p>
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-                        dolor in reprehenderit in voluptate velit esse cillum dolore
-                        eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                        officia deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <div id="step-4">
-                      <h2 class="StepTitle">Step 4 Content</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                        mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
+                  <form class="form-horizontal form-label-left" action="insert/insertTransaksi.php" method="post">
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Id Pelanggan</label>
+                      <div class="col-md-6 col-sm-6">
+                        <input type="text" id="idpelanggan" name="idpelanggan" required="required"
+                          value="<?php echo $kodeauto; ?>" class="form-control" readonly>
+                      </div>
                     </div>
 
-                  </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Id Penjualan</label>
+                      <div class="col-md-6 col-sm-6 ">
+                        <input type="text" id="idpenjualan" name="idpenjualan" required="required" class="form-control"
+                          value="<?php echo generatepenjualan(); ?>" readonly>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama Anggrek</label>
+                      <div class="col-md-6 col-sm-6">
+                        <select name="idanggrek" id="idanggrek" class="form-control">
+                          <option value="" selected disabled>
+                            -- Nama & Stok Anggrek --
+                          </option>
+                          <?php
+                          $koneksi = mysqli_connect("localhost", "root", "", "anggrek");
+                          if (mysqli_connect_errno()) {
+                            echo "Koneksi ke database gagal: " . mysqli_connect_error();
+                            exit();
+                          }
+                          $query = "SELECT id_anggrek, nama_anggrek, stok, harga FROM anggrek";
+                          $result = mysqli_query($koneksi, $query);
+
+                          while ($row = mysqli_fetch_assoc($result)) {
+                            echo "<option value='" . $row['id_anggrek'] . "' data-stok='" . $row['stok'] . "' data-harga='" . $row['harga'] . "'>" . $row['nama_anggrek'] . " - Stok: " . $row['stok'] . "</option>";
+                          }
+                          ?>
+                        </select>
+                      </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama</label>
+                      <div class="col-md-6 col-sm-6">
+                        <input type="text" id="nama" name="nama" required="required" class="form-control">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Alamat</label>
+                      <div class="col-md-6 col-sm-6">
+                        <input type="text" id="alamat" name="alamat" required="required" class="form-control">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">No Telepon</label>
+                      <div class="col-md-6 col-sm-6">
+                        <input type="number" id="notelepon" name="notelepon" required="required" class="form-control">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Harga</label>
+                      <div class="col-md-6 col-sm-6">
+                        <input type="number" id="harga" name="harga" required="required" class="form-control" readonly>
+                        <script>
+                          document.getElementById('idanggrek').addEventListener('change', function () {
+                            var selectedOption = this.options[this.selectedIndex];
+                            var selectedPrice = selectedOption.getAttribute('data-harga');
+                            document.getElementById('harga').value = selectedPrice;
+                          });
+                        </script>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Jumlah</label>
+                      <div class="col-md-6 col-sm-6 ">
+                        <input type="number" id="jumlah" name="jumlah" required="required" class="form-control ">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Total</label>
+                      <div class="col-md-6 col-sm-6 ">
+                        <input type="number" id="total" name="total" required="required" class="form-control"
+                          oninput='hitungTotal();' readonly>
+
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Tanggal</label>
+                      <div class="col-md-6 col-sm-6 ">
+                        <input type="text" id="tanggal" name="tanggal" required="required" class="form-control" readonly  >
+                        <script src="assets/js/scripts.js"></script>
+                      </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="item form-group">
+                      <div class="col-md-6 col-sm-6 offset-md-3">
+                        <!-- <button class="btn btn-primary" type="button">tambah</button> -->
+                        <button class="btn btn-primary" type="reset">Reset</button>
+                        <button type="submit" class="btn btn-success" name="simpan">Submit</button>
+                      </div>
+                    </div>
+
+                  </form>
+
                   <!-- End SmartWizard Content -->
 
 
 
-
-
-                  <h2>Example: Vertical Style</h2>
-                  <!-- Tabs -->
-                  <div id="wizard_verticle" class="form_wizard wizard_verticle">
-                    <ul class="list-unstyled wizard_steps">
-                      <li>
-                        <a href="#step-11">
-                          <span class="step_no">1</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#step-22">
-                          <span class="step_no">2</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#step-33">
-                          <span class="step_no">3</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#step-44">
-                          <span class="step_no">4</span>
-                        </a>
-                      </li>
-                    </ul>
-
-                    <div id="step-11">
-                      <h2 class="StepTitle">Step 1 Content</h2>
-                      <form class="form-horizontal form-label-left">
-
-                        <span class="section">Personal Info</span>
-
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">First Name <span
-                              class="required">*</span>
-                          </label>
-                          <div class="col-md-6 col-sm-6">
-                            <input type="text" id="first-name2" required="required" class="form-control">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Last Name <span
-                              class="required">*</span>
-                          </label>
-                          <div class="col-md-6 col-sm-6">
-                            <input type="text" id="last-name2" name="last-name" required="required"
-                              class="form-control">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Middle Name /
-                            Initial</label>
-                          <div class="col-md-6 col-sm-6">
-                            <input id="middle-name2" class="form-control " type="text" name="middle-name">
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
-                          <div class="col-md-6 col-sm-6">
-                            <div id="gender2" class="btn-group" data-toggle="buttons">
-                              <label class="btn btn-secondary" data-toggle-class="btn-primary"
-                                data-toggle-passive-class="btn-secondary">
-                                <input type="radio" name="gender" value="male" class="join-btn"> &nbsp; Male &nbsp;
-                              </label>
-                              <label class="btn btn-primary" data-toggle-class="btn-primary"
-                                data-toggle-passive-class="btn-secondary">
-                                <input type="radio" name="gender" value="female" class="join-btn" checked=""> Female
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="form-group row">
-                          <label class="col-form-label col-md-3 col-sm-3 label-align">Date Of Birth <span
-                              class="required">*</span>
-                          </label>
-                          <div class="col-md-6 col-sm-6">
-                            <input id="birthday2" class="date-picker form-control" required="required" type="text">
-                          </div>
-                        </div>
-
-                      </form>
-                    </div>
-                    <div id="step-22">
-                      <h2 class="StepTitle">Step 2 Content</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                        mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <div id="step-33">
-                      <h2 class="StepTitle">Step 3 Content</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                        mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                    <div id="step-44">
-                      <h2 class="StepTitle">Step 4 Content</h2>
-                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-                        mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                        occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                      </p>
-                    </div>
-                  </div>
                   <!-- End SmartWizard Content -->
                 </div>
               </div>
             </div>
           </div>
+          <!-- /page content -->
+
+          <!-- footer content -->
+          <footer>
+            <div class="pull-right">
+              Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+            </div>
+            <div class="clearfix"></div>
+          </footer>
+          <!-- /footer content -->
         </div>
       </div>
-      <!-- /page content -->
 
-      <!-- footer content -->
-      <footer>
-        <div class="pull-right">
-          Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-        </div>
-        <div class="clearfix"></div>
-      </footer>
-      <!-- /footer content -->
-    </div>
-  </div>
+      <!-- jQuery -->
+      <script src="admin/vendors/jquery/dist/jquery.min.js"></script>
+      <!-- Bootstrap -->
+      <script src="admin/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+      <!-- FastClick -->
+      <script src="admin/vendors/fastclick/lib/fastclick.js"></script>
+      <!-- NProgress -->
+      <script src="admin/vendors/nprogress/nprogress.js"></script>
+      <!-- jQuery Smart Wizard -->
+      <script src="admin/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
+      <!-- Custom Theme Scripts -->
+      <script src="admin/build/js/custom.min.js"></script>
 
-  <!-- jQuery -->
-  <script src="admin/vendors/jquery/dist/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="admin/vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- FastClick -->
-  <script src="admin/vendors/fastclick/lib/fastclick.js"></script>
-  <!-- NProgress -->
-  <script src="admin/vendors/nprogress/nprogress.js"></script>
-  <!-- jQuery Smart Wizard -->
-  <script src="admin/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
-  <!-- Custom Theme Scripts -->
-  <script src="admin/build/js/custom.min.js"></script>
 
+      <script>
+        function hitungTotal() {
+          var harga = document.getElementById('harga').value;
+          var jumlah = document.getElementById('jumlah').value;
+
+          // Lakukan perhitungan
+          var total = parseInt(harga) * parseInt(jumlah);
+
+          // Tampilkan hasil pada input Total
+          document.getElementById('total').value = total;
+        }
+
+        // Panggil fungsi hitungTotal saat nilai pada input harga atau jumlah berubah
+        document.getElementById('harga').addEventListener('input', hitungTotal);
+        document.getElementById('jumlah').addEventListener('input', hitungTotal);
+      </script>
+      <!-- Tambahkan kode ini di bagian <body> -->
 
 </body>
 
