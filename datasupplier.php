@@ -1,4 +1,14 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: login.php?login_section=signin");
+    exit();
+}
+
+?>
+
+<?php
 require_once("koneksi.php");
 $query = "SELECT * FROM supplier";
 $result = mysqli_query($koneksi, $query);
@@ -80,7 +90,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><i class="fa fa-seedling"></i> <span>Kebun
+                        <a href="index.html" class="site_title"><i class="fa fa-leaf"></i> <span>Kebun
                                 Anggrek</span></a>
                     </div>
 
@@ -116,12 +126,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span"></span></a>
 
                                 </li>
-                                <li><a><i class="fa fa-dollar"></i> Transaksi <span
-                                            class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="datatransaksi.php">Data Transaksi</a></li>
-                                        <li><a href="Transaksi.php">Form Transaksi</a></li>
-                                    </ul>
+                                <li><a href="datatransaksi.php"><i class="fa fa-money"></i> Transaksi <span></span></a>
+                                </li>
+                                <li><a href="laporan.php"><i class="fa fa-book"></i> Laporan <span></span></a>
                                 </li>
                             </ul>
                         </div>
@@ -174,7 +181,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <div class="page-title" style="display: inline-block;">
                         <div class="title_left">
                             <h3>Data-data Supplier</h3>
-                            <button class="tombol-tambah"><a href="formsupplier.php" style="color: #333;">Tambah Data</a></button>
+                            <button class="tombol-tambah"><a href="formsupplier.php" style="color: #333;">Tambah
+                                    Data</a></button>
                         </div>
                     </div>
 
@@ -199,11 +207,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                     style="width:100%">
                                                     <thead>
                                                         <tr>
-                                                            <th>No</th>
-                                                            <th>Id_Supplier</th>
+                                                            <th style="width: 70px;">Id Supplier</th>
                                                             <th>Nama</th>
-                                                            <th>Alamat</th>
-                                                            <th>No_Telp</th>
+                                                            <th style="width: 190px;">Alamat</th>
+                                                            <th>No Telp</th>
                                                             <th style="width: 130px;">Action</th>
                                                         </tr>
                                                     </thead>
@@ -212,7 +219,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                         <?php
                                                         foreach ($dataSupplier as $row) {
                                                             echo "<tr>";
-                                                            echo "<td>" . $no . "</td>";
                                                             echo "<td>" . $row['id_supplier'] . "</td>";
                                                             echo "<td>" . $row['nama_supplier'] . "</td>";
                                                             echo "<td>" . $row['alamat'] . "</td>";
@@ -275,17 +281,28 @@ while ($row = mysqli_fetch_assoc($result)) {
 
                             <script>
                                 $(document).on('click', 'button[name="edit"]', function () {
-                                    var id_supplier = $(this).data('id');
+                                    // Menggunakan metode chaining untuk mengakses elemen dan nilai teks lebih efisien
                                     var row = $(this).closest('tr');
+                                    var id_supplier = $(this).data('id');
                                     var nama = row.find('td:eq(2)').text();
                                     var alamat = row.find('td:eq(3)').text();
                                     var notelp = row.find('td:eq(4)').text();
 
-                                    $('#id_supplier').val(id_supplier);
-                                    $('#nama').val(nama);
-                                    $('#alamat').val(alamat);
-                                    $('#notelp').val(notelp);
+                                    // Menggunakan objek untuk menyimpan data dan memperjelas kodenya
+                                    var supplierData = {
+                                        id_supplier: id_supplier,
+                                        nama: nama,
+                                        alamat: alamat,
+                                        notelp: notelp
+                                    };
+
+                                    // Mengisi nilai input form dengan data supplier yang dipilih
+                                    $('#id_supplier').val(supplierData.id_supplier);
+                                    $('#nama').val(supplierData.nama);
+                                    $('#alamat').val(supplierData.alamat);
+                                    $('#notelp').val(supplierData.notelp);
                                 });
+
                             </script>
 
                             <script>

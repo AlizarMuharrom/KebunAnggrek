@@ -1,6 +1,19 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+  header("Location: login.php?login_section=signin");
+  exit();
+}
+
+?>
+
+<?php
 require_once("koneksi.php");
-$query = "SELECT * FROM anggrek";
+$query = "SELECT anggrek.id_anggrek, supplier.nama_supplier, anggrek.nama_anggrek, anggrek.harga, anggrek.stok 
+FROM anggrek 
+JOIN supplier ON anggrek.id_supplier = supplier.id_supplier;
+";
 $result = mysqli_query($koneksi, $query);
 
 $no = 1;
@@ -50,28 +63,27 @@ while ($row = mysqli_fetch_assoc($result)) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     integrity="sha384-..." crossorigin="anonymous">
 
-    <style>
+  <style>
+    .tombol-tambah {
+      background-color: #3498db;
+      color: #fff;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      position: relative;
+      width: 130px;
+      margin-left: 900px;
+      position: relative;
+      bottom: 50px;
+    }
 
-        .tombol-tambah {
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            position: relative;
-            width: 130px;
-            margin-left: 900px;
-            position: relative;
-            bottom: 50px;
-        }
-
-        .tombol-tambah:hover {
-            background-color: #2980b9;
-        }
-    </style>
+    .tombol-tambah:hover {
+      background-color: #2980b9;
+    }
+  </style>
 </head>
 
 <body class="nav-md">
@@ -101,28 +113,25 @@ while ($row = mysqli_fetch_assoc($result)) {
 
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-						<div class="menu_section">
-							<h3>General</h3>
-							<ul class="nav side-menu">
-								<li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
-								</li>
+            <div class="menu_section">
+              <h3>General</h3>
+              <ul class="nav side-menu">
+                <li><a href="index.php"><i class="fa fa-home"></i> Home <span></span></a>
+                </li>
 
-								<li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
-								</li>
-								<li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
-								</li>
-								<li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
-								</li>
-								<li><a><i class="fa fa-dollar"></i> Transaksi <span
-											class="fa fa-chevron-down"></span></a>
-									<ul class="nav child_menu">
-										<li><a href="datatransaksi.php">Data Transaksi</a></li>
-										<li><a href="Transaksi.php">Form Transaksi</a></li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</div>
+                <li><a href="DataAnggrek.php"><i class="fa fa-leaf"></i> Anggrek <span></span></a>
+                </li>
+                <li><a href="datasupplier.php"><i class="fa fa-truck"></i> Supplier <span></span></a>
+                </li>
+                <li><a href="datapelanggan.php"><i class="fa fa-user"></i> Pelanggan <span></span></a>
+                </li>
+                <li><a href="datatransaksi.php"><i class="fa fa-money"></i> Transaksi <span></span></a>
+                </li>
+                <li><a href="laporan.php"><i class="fa fa-book"></i> Laporan <span></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
           <!-- /sidebar menu -->
 
           <!-- /menu footer buttons -->
@@ -193,9 +202,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <table id="datatable" class="table table-striped table-bordered" style="width:100%; ">
                           <thead>
                             <tr>
-                              <th>No</th>
-                              <th>Nama</th>
-                              <th>Jenis</th>
+                              <th style="width: 5px;">No</t>
+                              <th>Nama Supplier</th>
+                              <th>ID Anggrek</th>
+                              <th>Nama Anggrek</th>
                               <th>Harga</th>
                               <th>Stok</th>
                               <th style="width: 130px;">Action</th>
@@ -206,14 +216,14 @@ while ($row = mysqli_fetch_assoc($result)) {
                             foreach ($dataAnggrek as $row) {
                               echo "<tr>";
                               echo "<td>" . $no . "</td>";
+                              echo "<td>" . $row['nama_supplier'] . "</td>";
+                              echo "<td>" . $row['id_anggrek'] . "</td>";
                               echo "<td>" . $row['nama_anggrek'] . "</td>";
-                              echo "<td>" . $row['jenis'] . "</td>";
                               echo "<td>" . $row['harga'] . "</td>";
                               echo "<td>" . $row['stok'] . "</td>";
                               echo '<td>';
                               echo '<button id="edit_' . $no . '" type="button" name="edit" data-toggle="modal" data-target="#edit-modal" data-id="' . $row['id_anggrek'] . '" class="btn btn-primary" data-id="' . $row['id_anggrek'] . '">Edit</button>';
                               echo ' <button id="delete_' . $row['id_anggrek'] . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $row['id_anggrek'] . ')">Delete</button>';
-
                               echo '</td>';
                               echo "</tr>";
                               $no++;
@@ -264,12 +274,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                   var id = $(this).data('id');
                   var row = $(this).closest('tr');
                   var nama = row.find('td:eq(1)').text();
-                  var jenis = row.find('td:eq(2)').text();
-                  var harga = row.find('td:eq(3)').text();
-                  var stok = row.find('td:eq(4)').text();
+                  var harga = row.find('td:eq(2)').text();
+                  var stok = row.find('td:eq(3)').text();
                   $('#edit_id').val(id);
                   $('#edit_nama').val(nama);
-                  $('#edit_jenis').val(jenis);
                   $('#edit_harga').val(harga);
                   $('#edit_stok').val(stok);
                 });
@@ -308,14 +316,11 @@ while ($row = mysqli_fetch_assoc($result)) {
       </div>
       <div class="modal-body">
         <form action="update/updateanggrek.php" method="POST" id="edit_form" enctype='multipart/form-data'>
-          <label>Id Anggrek</label>
-          <input type="text" name="id" id="edit_id" class="form-control" readonly>
+          <!-- <label>Id Anggrek</label> -->
+          <input type="text" name="id" id="edit_id" class="form-control" hidden>
           <br />
           <label>Nama Anggrek</label>
           <input type="text" name="nama" id="edit_nama" class="form-control" />
-          <br />
-          <label>Jenis Anggrek</label>
-          <input type="text" name="jenis" id="edit_jenis" class="form-control" />
           <br />
           <label>Harga</label>
           <input type="text" name="harga" id="edit_harga" class="form-control">
