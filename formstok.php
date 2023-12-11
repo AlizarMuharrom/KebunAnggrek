@@ -42,43 +42,6 @@ function generatepembelian()
 		echo "Terjadi kesalahan: " . $e->getMessage();
 	}
 }
-function generateidanggrek()
-{
-	try {
-		// Sambungkan ke database Anda
-		$conn = mysqli_connect("localhost", "root", "", "anggrek");
-
-		// Periksa koneksi
-		if (mysqli_connect_errno()) {
-			echo "Koneksi ke database gagal: " . mysqli_connect_error();
-			exit();
-		}
-
-		// Query untuk mengambil data pelanggan dan mengurutkannya berdasarkan id_pelanggan secara ascending
-		$sql = "SELECT * FROM anggrek ORDER BY id_anggrek ASC";
-		$result = mysqli_query($conn, $sql);
-
-		$nextNumber = 1;
-
-		while ($row = mysqli_fetch_assoc($result)) {
-			$NoJual = substr($row['id_anggrek'], 3);
-			if (!empty($NoJual)) {
-				$nextNumber = max($nextNumber, intval($NoJual) + 1);
-			}
-		}
-
-		$AN = sprintf("%04d", $nextNumber);
-		$newID = "ANG" . $AN;
-
-		// Tutup koneksi ke database
-		mysqli_close($conn);
-
-		return $newID;
-	} catch (Exception $e) {
-		echo "Terjadi kesalahan: " . $e->getMessage();
-	}
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -213,7 +176,7 @@ function generateidanggrek()
 				<div class="">
 					<div class="page-title">
 						<div class="title_left">
-							<h3>Form Anggrek</h3>
+							<h3>Form Stok</h3>
 						</div>
 					</div>
 					<div class="clearfix"></div>
@@ -232,30 +195,7 @@ function generateidanggrek()
 									<br />
 									<form action="" id="demo-form2" data-parsley-validate
 										class="form-horizontal form-label-left" method="POST">
-
-										<div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align"
-												for="idsupplier">Id Supplier <span class="required"></span>
-											</label>
-											<?php require_once('insert/insertanggrek.php') ?>
-											<div class="col-md-6 col-sm-6 ">
-												<select name="id-supplier" id="id-supplier" class="form-control">
-													<?php
-													$koneksi = mysqli_connect("localhost", "root", "", "anggrek");
-													if (mysqli_connect_errno()) {
-														echo "Koneksi ke database gagal: " . mysqli_connect_error();
-														exit();
-													}
-													$query = "SELECT id_supplier, nama_supplier FROM supplier"; // Perbaikan nama kolom
-													$result = mysqli_query($koneksi, $query);
-
-													while ($row = mysqli_fetch_assoc($result)) {
-														echo "<option value='" . $row['id_supplier'] . "'>" . $row['id_supplier'] . " - " . $row['nama_supplier'] . "</option>"; // Perbaikan nama kolom
-													}
-													?>
-												</select>
-											</div>
-										</div>
+										<?php require_once('insert/tambah.php') ?>
 										<div class="item form-group">
 											<label class="col-form-label col-md-3 col-sm-3 label-align"
 												for="namaanggrek">Id Pembelian <span></span>
@@ -268,11 +208,27 @@ function generateidanggrek()
 										</div>
 										<div class="item form-group">
 											<label class="col-form-label col-md-3 col-sm-3 label-align"
-												for="namaanggrek">Id Anggrek <span class=""></span>
+												for="namaanggrek">Nama anggrek<span class=""></span>
 											</label>
 											<div class="col-md-6 col-sm-6 ">
-												<input type="text" id="idanggrek" name="idanggrek"
-													class="form-control " value="<?php echo generateidanggrek(); ?>">
+												<select name="idanggrek" id="idanggrek" class="form-control">
+													<option value="" selected disabled>
+														-- Nama & Stok Anggrek --
+													</option>
+													<?php
+													$koneksi = mysqli_connect("localhost", "root", "", "anggrek");
+													if (mysqli_connect_errno()) {
+														echo "Koneksi ke database gagal: " . mysqli_connect_error();
+														exit();
+													}
+													$query = "SELECT id_anggrek, nama_anggrek, stok, harga FROM anggrek";
+													$result = mysqli_query($koneksi, $query);
+
+													while ($row = mysqli_fetch_assoc($result)) {
+														echo "<option value='" . $row['id_anggrek'] . "' data-stok='" . $row['stok'] . "' data-harga='" . $row['harga'] . "'>" . $row['nama_anggrek'] . " - Stok: " . $row['stok'] . "</option>";
+													}
+													?>
+												</select>
 											</div>
 										</div>
 										<div class="item form-group">
@@ -286,37 +242,17 @@ function generateidanggrek()
 										</div>
 										<div class="item form-group">
 											<label class="col-form-label col-md-3 col-sm-3 label-align"
-												for="namaanggrek">Nama Anggrek <span class=""></span>
-											</label>
-											<div class="col-md-6 col-sm-6 ">
-												<input type="text" id="nama" name="nama" class="form-control ">
-											</div>
-										</div>
-										<div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align"
-												for="jenisanggrek">Jenis Anggrek <span class=""></span>
-											</label>
-											<select name="jenis" id="jenis" style="margin-left: 10px;">
-												<option value=""selected disabled>-- Choose at least one --</option>
-												<option value="Phalaenopsis">Phalaenopsis</option>
-												<option value="Dendrobium">Dendrobium</option>
-												<option value="Cattleya">Cattleya</option>
-												<option value="Rhinchostylis">Rhynchostylis</option>
-												<option value="Grammatophyllum">Grammatophyllum</option>
-												<option value="Paphiodepilum">Paphiopedilium</option>
-												<option value="Oncidium">Oncidium</option>
-												<option value="Cymbidium">Cymbidium</option>
-												<option value="Laelia">Laelia</option>
-												<option value="Vanda">vanda</option>
-												<option value="Coelogyne">Coelogyne</option>
-											</select>
-										</div>
-										<div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align"
 												for="namaanggrek">Harga <span class=""></span>
 											</label>
 											<div class="col-md-6 col-sm-6 ">
 												<input type="text" id="harga" name="harga" class="form-control ">
+												<script>
+													document.getElementById('idanggrek').addEventListener('change', function () {
+														var selectedOption = this.options[this.selectedIndex];
+														var selectedPrice = selectedOption.getAttribute('data-harga');
+														document.getElementById('harga').value = selectedPrice;
+													});
+												</script>
 											</div>
 										</div>
 										<div class="item form-group">
@@ -331,22 +267,15 @@ function generateidanggrek()
 											<label for="harga"
 												class="col-form-label col-md-3 col-sm-3 label-align">Total</label>
 											<div class="col-md-6 col-sm-6 ">
-												<input id="total" class="form-control" type="number" name="total" oninput='hitungTotal();' readonly>
-											</div>
-										</div>
-										<div class="item form-group">
-											<label for="harga"
-												class="col-form-label col-md-3 col-sm-3 label-align" hidden>Stok</label>
-											<div class="col-md-6 col-sm-6 ">
-												<input id="stok" class="form-control" type="number" name="stok" hidden>
+												<input id="total" class="form-control" type="number" name="total"
+													oninput='hitungTotal();' readonly>
 											</div>
 										</div>
 										<div class="ln_solid"></div>
 										<div class="item form-group">
 											<div class="col-md-6 col-sm-6 offset-md-3">
 												<button class="btn btn-primary" type="reset">Reset</button>
-												<button type="submit" class="btn btn-success"
-													name="submit">Submit</button>
+												<button type="submit" class="btn btn-success" name="tambah">Submit</button>
 											</div>
 										</div>
 									</form>

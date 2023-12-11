@@ -8,7 +8,7 @@ if (isset($_POST['update'])) {
     $harga = $_POST['harga'];
     $stok = $_POST['stok'];
 
-    $query = "UPDATE anggrek SET nama_anggrek = '$nama', jenis = '$jenis', harga = '$harga', stok = '$stok' WHERE id_anggrek ='$id'";
+    $query = "UPDATE anggrek SET nama_anggrek = '$nama', harga = '$harga' WHERE id_anggrek ='$id'";
 
     $result = mysqli_query($koneksi, $query);
 

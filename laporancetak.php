@@ -28,7 +28,7 @@
 
             <!-- Table row -->
             <div class="row">
-                <h1 class="text-center">Laporan Harian</h1>
+                <h1 class="text-center">Laporan</h1>
                 <div class="table-responsive table-bordered" style="width: 100%;">
                     <?php
                     include 'koneksi.php';
@@ -37,7 +37,7 @@
                     SELECT
                         penjualan.id_penjualan,
                         penjualan.tanggal_penjualan,
-                        penjualan.jumlah,
+                        penjualan.jumlah_item,
                         penjualan.total_harga,
                         anggrek.nama_anggrek,
                         pelanggan.nama_pelanggan
@@ -106,7 +106,7 @@
                                         </td>
                                         <td style="font-size:12px;">
                                             <center>
-                                                <?php echo isset($row['jumlah']) ? $row['jumlah'] : ''; ?>
+                                                <?php echo isset($row['jumlah_item']) ? $row['jumlah_item'] : ''; ?>
                                             </center>
                                         </td>
                                         <td style="font-size:12px;">

@@ -103,6 +103,8 @@ function generatepenjualan()
   <!-- Bootstrap -->
   <link href="admin/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="..." crossorigin="anonymous">
+
   <link href="admin/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   <!-- NProgress -->
   <link href="admin/vendors/nprogress/nprogress.css" rel="stylesheet">
@@ -211,7 +213,6 @@ function generatepenjualan()
           <div class="clearfix"></div>
 
           <div class="row">
-
             <div class="col-md-12 col-sm-12 ">
               <div class="x_panel">
                 <div class="x_title">
@@ -256,7 +257,7 @@ function generatepenjualan()
                           $result = mysqli_query($koneksi, $query);
 
                           while ($row = mysqli_fetch_assoc($result)) {
-                            echo "<option value='" . $row['id_anggrek'] . "' data-stok='" . $row['stok'] . "' data-harga='" . $row['harga'] . "'>" . $row['nama_anggrek'] . " - Stok: " . $row['stok'] . "</option>";
+                            echo "<option value='" . $row['id_anggrek'] . "' data-stok='" . $row['stok'] . "' data-harga='" . $row['harga'] . "'>" . $row['nama_anggrek'] . " - Stok: " . $row['stok'] . " - harga: " . $row['harga'] . "</option>";
                           }
                           ?>
                         </select>
@@ -285,14 +286,14 @@ function generatepenjualan()
                     <div class="form-group row">
                       <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Harga</label>
                       <div class="col-md-6 col-sm-6">
-                        <input type="number" id="harga" name="harga" required="required" class="form-control" readonly>
-                        <script>
+                        <input type="number" id="harga" name="harga" required="required" class="form-control">
+                        <!-- <script>
                           document.getElementById('idanggrek').addEventListener('change', function () {
                             var selectedOption = this.options[this.selectedIndex];
                             var selectedPrice = selectedOption.getAttribute('data-harga');
                             document.getElementById('harga').value = selectedPrice;
                           });
-                        </script>
+                        </script> -->
                       </div>
                     </div>
                     <div class="form-group row">
@@ -312,7 +313,7 @@ function generatepenjualan()
                     <div class="form-group row">
                       <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Tanggal</label>
                       <div class="col-md-6 col-sm-6 ">
-                        <input type="text" id="tanggal" name="tanggal" required="required" class="form-control" readonly  >
+                        <input type="text" id="tanggal" name="tanggal" required="required" class="form-control" readonly>
                         <script src="assets/js/scripts.js"></script>
                       </div>
                     </div>
@@ -361,6 +362,7 @@ function generatepenjualan()
       <script src="admin/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
       <!-- Custom Theme Scripts -->
       <script src="admin/build/js/custom.min.js"></script>
+      
 
 
       <script>

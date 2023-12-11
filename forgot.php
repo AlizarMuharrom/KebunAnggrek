@@ -7,8 +7,7 @@ if (isset($_POST['submit'])) {
     $hint = $_POST['hint'];
     $jawabanhint = $_POST['hintanswer'];
     $password = $_POST['password'];
-
-    // Verifikasi data yang diambil dari form
+ 
     if (empty($username) || empty($hint) || empty($jawabanhint) || empty($password)) {
         $_SESSION['error'] = 'Semua kolom harus diisi';
         header("Location: forgot.php");
@@ -19,12 +18,10 @@ if (isset($_POST['submit'])) {
     $resultcari = mysqli_query($koneksi, $querycari);
 
     if (mysqli_num_rows($resultcari) == 1) {
-        // User ditemukan, perbarui kata sandi
         $queryUpdate = "UPDATE users SET password = '$password' WHERE username = '$username'";
         $resultUpdate = mysqli_query($koneksi, $queryUpdate);
 
         if ($resultUpdate) {
-            // Password berhasil diperbarui
             $_SESSION['luppus'] = 'Password berhasil Diubah';
             header("Location: login.php");
             exit();
@@ -47,8 +44,16 @@ if (isset($_POST['submit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style1.css">
     <title>Forgot Password</title>
+    <style>
+        .a-batalganti::hover {
+            background-color: rgb(212, 212, 212);
+            color: rgb(43, 43, 43);
+            transition: 0.2s;
+            transition-delay: 0.2s;
+        }
+    </style>
 </head>
 
 <body style="background-image: url(assets/foto/background.jpg);">
@@ -56,7 +61,7 @@ if (isset($_POST['submit'])) {
         <div class="main-card" style="justify-content: start; max-height: 480px;">
             <img src="assets/foto/anggrek.jpeg" class="img-card">
             <form action="forgot.php" method="POST" class="card-2">
-                <h1 style="margin-right: -10px; margin-left: -20px;">Forgot Password</h1>
+                <h1 style="margin-right: -10px; margin-left: -30px;">Change Password</h1>
                 <label for="username" style="margin-left: 5px; margin-bottom: -5px;">Username : </label>
                 <input type="text" name="username" id="username" style="width: 230px; height: 25px; 
                     border-radius: 5px; margin-left: 5px;" placeholder="Input your username" required>
@@ -80,6 +85,7 @@ if (isset($_POST['submit'])) {
                     border-radius: 5px; margin-left: 5px; margin-top: -40px;" placeholder="Input your password here"
                     required>
                 <input name="submit" type="submit" class="button-submit1" style="margin-top: 0px; margin-bottom: 50px;">
+                <a href="login.php" class="a-batalganti">Batal ganti sandi??</a>
             </form>
         </div>
     </div>

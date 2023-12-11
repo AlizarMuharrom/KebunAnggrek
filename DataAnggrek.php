@@ -64,7 +64,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     integrity="sha384-..." crossorigin="anonymous">
 
   <style>
-    .tombol-tambah {
+    .tombol-tambahdata {
       background-color: #3498db;
       color: #fff;
       padding: 10px;
@@ -75,9 +75,24 @@ while ($row = mysqli_fetch_assoc($result)) {
       transition: background-color 0.3s;
       position: relative;
       width: 130px;
-      margin-left: 900px;
+      margin-left: 748px;
       position: relative;
       bottom: 50px;
+    }
+    .tombol-tambahstok {
+      background-color: #3498db;
+      color: #fff;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      position: relative;
+      width: 130px;
+      margin-left: 948px;
+      position: relative;
+      bottom: 97px;
     }
 
     .tombol-tambah:hover {
@@ -180,7 +195,12 @@ while ($row = mysqli_fetch_assoc($result)) {
           <div class="page-title" style="display: inline-block;">
             <div class="title_left">
               <h3>Data-data tanaman Anggrek</h3>
-              <button class="tombol-tambah"><a href="formanggrek.php" style="color: #333;">Tambah Data</a></button>
+              <form action="formanggrek.php">
+                <button class="tombol-tambahdata"><a href="formanggrek.php" style="color: #333;">Tambah Data</a></button>
+              </form>
+              <form action="formstok.php">
+                <button class="tombol-tambahstok"><a href="formstok.php" style="color: #333;">Tambah Stok</a></button>
+              </form>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -223,7 +243,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                               echo "<td>" . $row['stok'] . "</td>";
                               echo '<td>';
                               echo '<button id="edit_' . $no . '" type="button" name="edit" data-toggle="modal" data-target="#edit-modal" data-id="' . $row['id_anggrek'] . '" class="btn btn-primary" data-id="' . $row['id_anggrek'] . '">Edit</button>';
-                              echo ' <button id="delete_' . $row['id_anggrek'] . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $row['id_anggrek'] . ')">Delete</button>';
+                              // echo ' <button id="delete_' . $row['id_anggrek'] . '" type="button" name="delete" class="btn btn-danger" onclick="deleteData(' . $row['id_anggrek'] . ')">Delete</button>';
                               echo '</td>';
                               echo "</tr>";
                               $no++;
@@ -273,13 +293,13 @@ while ($row = mysqli_fetch_assoc($result)) {
                 $(document).on('click', '[data-toggle="modal"]', function () {
                   var id = $(this).data('id');
                   var row = $(this).closest('tr');
-                  var nama = row.find('td:eq(1)').text();
-                  var harga = row.find('td:eq(2)').text();
-                  var stok = row.find('td:eq(3)').text();
+                  var nama = row.find('td:eq(3)').text();
+                  var harga = row.find('td:eq(4)').text();
+                  // var stok = row.find('td:eq(3)').text();
                   $('#edit_id').val(id);
                   $('#edit_nama').val(nama);
                   $('#edit_harga').val(harga);
-                  $('#edit_stok').val(stok);
+                  // $('#edit_stok').val(stok);
                 });
               </script>
 
@@ -301,7 +321,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                     });
                   }
                 }
-
               </script>
 </body>
 
@@ -317,7 +336,7 @@ while ($row = mysqli_fetch_assoc($result)) {
       <div class="modal-body">
         <form action="update/updateanggrek.php" method="POST" id="edit_form" enctype='multipart/form-data'>
           <!-- <label>Id Anggrek</label> -->
-          <input type="text" name="id" id="edit_id" class="form-control" hidden>
+          <input type="text" name="id" id="edit_id" class="form-control" readonly>
           <br />
           <label>Nama Anggrek</label>
           <input type="text" name="nama" id="edit_nama" class="form-control" />
@@ -325,9 +344,9 @@ while ($row = mysqli_fetch_assoc($result)) {
           <label>Harga</label>
           <input type="text" name="harga" id="edit_harga" class="form-control">
           <br />
-          <label>Stok</label>
+          <!-- <label>Stok</label>
           <input type="number" name="stok" id="edit_stok" class="form-control" />
-          <br />
+          <br /> -->
           <input type="submit" name="update" id="update" value="Update" class="btn btn-success">
         </form>
       </div>

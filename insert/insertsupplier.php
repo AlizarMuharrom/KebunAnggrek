@@ -1,25 +1,26 @@
 <?php
-require_once("koneksi.php");
+require_once("../koneksi.php");
 
 if (!empty($_POST)) {
-    $nama = $_POST["nama"];
+    $id = $_POST["no"];
+    $nama = $_POST["namasupplier"];
     $alamat = $_POST["alamat"];
-    $hp = $_POST["no"];
+    $hp = $_POST["nomer"];
 
-    $query = "INSERT INTO pelanggan( nama_pelanggan, alamat, no_telp) 
-        VALUES ('$nama','$alamat','$hp')";
+    
+    $query = "INSERT INTO supplier(id_supplier, nama_supplier, alamat, no_telp) VALUES ('$id','$nama', '$alamat' , '$hp')";
+
 
     $result = mysqli_query($koneksi, $query);
+    
 
     if ($result) {
-        ?>
-            <script type="module">
-                alert("Data Pelanggan berhasil ditambah");
-            </script>
-        <?php
+        header('location:../formsupplier.php');
     } else {
         echo "Data gagal ditambahkan!";
         echo "Error : " . mysqli_error($koneksi);
     }
 }
+
+// ...
 ?>
