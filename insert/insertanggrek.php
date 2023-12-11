@@ -4,6 +4,7 @@ require_once("koneksi.php");
 if (!empty($_POST)) {
     $supplier = $_POST["id-supplier"];
     $namaanggrek = $_POST["nama"];
+    $jenisanggrek = $_POST["jenis"];
     $idanggrek = $_POST["idanggrek"];
     $harga = $_POST["harga"];
     $stok = $_POST["stok"];
@@ -13,9 +14,9 @@ if (!empty($_POST)) {
     $total = $_POST["total"];
     
 
-    $query = "INSERT INTO anggrek(nama_anggrek, id_anggrek , harga, stok, id_supplier) VALUES ('$namaanggrek','$idanggrek','$harga','$stok','$supplier')";
-    $query1 = "INSERT INTO pembelian(id_pembelian, tanggal_pembelian, jumlah, total_harga) VALUES ('$idpembelian',CURDATE(),'$jumlah','$total')";
-    $query2 = "INSERT INTO detail_pembelian(id_pembelian, id_anggrek) VALUES ('$idpembelian','$idanggrek')";
+    $query = "INSERT INTO anggrek(nama_anggrek, jenis, id_anggrek , harga, stok, id_supplier) VALUES ('$namaanggrek','$jenisanggrek','$idanggrek','$harga','$stok','$supplier')";
+    $query1 = "INSERT INTO pembelian(id_pembelian, tanggal_pembelian, total_harga) VALUES ('$idpembelian',CURDATE(),'$total')";
+    $query2 = "INSERT INTO detail_pembelian(id_pembelian, id_anggrek, jumlah) VALUES ('$idpembelian','$idanggrek','$jumlah')";
 
     if (mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT id_supplier from supplier where id_supplier = '$supplier'")) == null) {
         ?>

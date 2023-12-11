@@ -229,7 +229,7 @@
                                     SELECT
                                     penjualan.id_penjualan,
                                     penjualan.tanggal_penjualan,
-                                    penjualan.jumlah,
+                                    penjualan.jumlah_item,
                                     penjualan.total_harga,
                                     anggrek.nama_anggrek,
                                     pelanggan.nama_pelanggan
@@ -250,7 +250,7 @@
                                                             echo "<td>" . $row['nama_anggrek'] . "</td>";
                                                             echo "<td>" . $row['nama_pelanggan'] . "</td>";
                                                             echo "<td>" . $row['tanggal_penjualan'] . "</td>";
-                                                            echo "<td>" . $row['jumlah'] . "</td>";
+                                                            echo "<td>" . $row['jumlah_item'] . "</td>";
                                                             echo "<td>" . $row['total_harga'] . "</td>";
                                                             echo '<td>
     <center><a href="laporancetak.php?id_penjualan=' . $row['id_penjualan'] . '" title="Edit Data ini" class="btn btn-info btn-sm"><i class="fa fa-print"></i> Print</a></center>
@@ -265,10 +265,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <center style="margin-left: 875px;
-                                    margin-top: 15px;"><a
-                                            href="cetaksemua.php?bln=<?php echo $_GET['bln']?> title="Edit Data ini" class="btn btn-info btn-sm"><i
-                                                class="fa fa-print"></i> Print All</a></center>
+                                    <?php
+                                    if (isset($_GET['bln'])) {
+                                        ?>
+                                        <center style="margin-left: 875px; margin-top: 15px;">
+                                            <a href="cetaksemua.php?bln=<?php echo $_GET['bln'] ?>" title="Edit Data ini"
+                                                class="btn btn-info btn-sm" style="margin-left: 200px;">
+                                                <i class="fa fa-print"></i> Print All
+                                            </a>
+                                        </center>
+                                        <?php
+                                    } else {
+                                        // Lakukan sesuatu jika $_GET['bln'] belum diatur
+                                        // Contoh: Tampilkan pesan bahwa bulan belum dipilih
+                                        echo "";
+                                    }
+                                    ?>
+
                                     <!-- /page content -->
                                     <!-- footer content -->
                                     <!-- /footer content -->

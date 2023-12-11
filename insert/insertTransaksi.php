@@ -19,8 +19,8 @@ if (isset($_POST['simpan'])) {
 
 
     $query1 = "INSERT INTO pelanggan (id_pelanggan, nama_pelanggan, alamat, no_telp) VALUES ('$idpelanggan','$nama','$alamat','$no')";  
-    $query = "INSERT INTO penjualan (id_penjualan, tanggal_penjualan, jumlah, total_harga, id_pelanggan) VALUES ('$idpenjualan',CURDATE(),'$jumlah','$total','$idpelanggan')";
-    $query2 = "INSERT INTO detail_penjualan (id_penjualan, id_anggrek) VALUES ('$idpenjualan','$idbarang')";
+    $query = "INSERT INTO penjualan (id_penjualan, tanggal_penjualan, jumlah_item, total_harga, id_pelanggan) VALUES ('$idpenjualan',CURDATE(),'$jumlah','$total','$idpelanggan')";
+    $query2 = "INSERT INTO detail_penjualan (id_penjualan, id_anggrek,jumlah, harga_jual) VALUES ('$idpenjualan','$idbarang','$jumlah','$harga')";
 
 
     $result1 = mysqli_query($koneksi, $query);

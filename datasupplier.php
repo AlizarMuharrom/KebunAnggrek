@@ -73,7 +73,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             transition: background-color 0.3s;
             position: relative;
             width: 130px;
-            margin-left: 900px;
+            margin-left: 948px;
             position: relative;
             bottom: 50px;
         }
@@ -284,9 +284,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                                     // Menggunakan metode chaining untuk mengakses elemen dan nilai teks lebih efisien
                                     var row = $(this).closest('tr');
                                     var id_supplier = $(this).data('id');
-                                    var nama = row.find('td:eq(2)').text();
-                                    var alamat = row.find('td:eq(3)').text();
-                                    var notelp = row.find('td:eq(4)').text();
+                                    var nama = row.find('td:eq(1)').text();
+                                    var alamat = row.find('td:eq(2)').text();
+                                    var notelp = row.find('td:eq(3)').text();
 
                                     // Menggunakan objek untuk menyimpan data dan memperjelas kodenya
                                     var supplierData = {

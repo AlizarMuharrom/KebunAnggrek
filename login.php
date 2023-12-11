@@ -1,55 +1,14 @@
-<!-- Code tegister start -->
-<?php
-require_once 'koneksi.php';
-
-if (isset($_GET['login_section'])) {
-    if ($_GET['login_section'] == 'signup' && isset($_POST['submit'])) {
-        $is_true = true;
-        foreach (['username', 'password', 'hint', 'hintanswer'] as $key => $required_input) {
-            if (!isset($_POST["$required_input"])) {
-                $is_true = false;
-            }
-        }
-
-        if ($is_true) {
-            $username = $_POST["username"];
-            $password = $_POST["password"];
-            $hint = $_POST["hint"];
-            $hintanswer = $_POST["hintanswer"];
-
-            if (mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT username FROM users WHERE username='$username'")) != null) {
-                ?>
-                <script type="module">
-                    alert('Username sudah terpakai.');
-                </script>
-                <?php
-            } else {
-                $query_sql = "INSERT INTO users (username, password, hint, jawaban_hint,level)
-                        VALUES ('$username', '$password', '$hint', '$hintanswer','admin')";
-
-                if (mysqli_query($koneksi, $query_sql)) {
-                    header("Location: login.php?login_section=signin");
-                } else {
-                    echo "Register Failed : " . mysqli_error($koneksi);
-                }
-            }
-        } else {
-        }
-    }
-}
-?>
-
-<!-- Code register end -->
-
 <!-- Code login start -->
-
 <?php
+session_start(); // Start the session
+
 require_once 'koneksi.php';
 
 if (isset($_GET['login_section'])) {
     if ($_GET['login_section'] == 'signup' && isset($_POST['submit'])) {
 
     } elseif ($_GET['login_section'] == 'signin' && isset($_POST['submit'])) {
+        
         $is_true = true;
         foreach (['username', 'password'] as $required_input) {
             if (!isset($_POST[$required_input]) || empty($_POST[$required_input])) {
@@ -65,13 +24,15 @@ if (isset($_GET['login_section'])) {
             $result = mysqli_query($koneksi, $query);
 
             if (mysqli_num_rows($result) == 1) {
+                $_SESSION['username'] = $username;
+                $_SESSION['loggedin'] = true;
                 header("Location: index.php");
+                exit();
             }
         }
     }
 }
 ?>
-
 <!-- Code login end -->
 
 <!DOCTYPE html>
@@ -80,25 +41,10 @@ if (isset($_GET['login_section'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style1.css">
     <title>Kebun Anggrek</title>
 </head>
 
-<style>
-    .ket-register1:hover {
-        background-color: rgb(212, 212, 212);
-        color: rgb(43, 43, 43);
-        transition: 0.2s;
-        transition-delay: 0.2s;
-    }
-
-    .ket-login:hover {
-        background-color: rgb(212, 212, 212);
-        color: rgb(43, 43, 43);
-        transition: 0.2s;
-        transition-delay: 0.2s;
-    }
-</style>
 
 <body style="background-image: url(assets/foto/background.jpg);">
     <div class="container">
@@ -113,7 +59,7 @@ if (isset($_GET['login_section'])) {
                         ?>
                         <form action="?login_section=signin" method="POST" style="margin-block-end: 0px; margin-block-start: 0px;"
                             class="card-2">
-                            <h1 style="position: relative; left: -17px;">Login</h1>
+                            <h1 style="position: relative;">Login</h1>
                             <label for="username" class="ket-email1"
                                 style="position: relative; left: 8px; margin-top: 15px;">Username : </label>
                             <input name="username" type="text" id="username" class="email-column1"
@@ -137,7 +83,7 @@ if (isset($_GET['login_section'])) {
                         ?>
                         <form action="?login_section=signup" class="card3" method="POST"
                             style="margin-block-end: 0px; margin-block-start: 0px;">
-                            <h1 class="ket-register" style="margin-left: 75px;" onload="alert(localStorage.log)">Register</h1>
+                            <h1 class="ket-register" onload="alert(localStorage.log)">Register</h1>
                             <label for="username" class="ket-email2">Username : </label>
                             <input name="username" type="text" class="email-column2" id="txt_email" required
                                 placeholder="Input your Username here">
@@ -146,7 +92,7 @@ if (isset($_GET['login_section'])) {
                                 placeholder="Input your Password here">
                             <label for="hint" class="ket-hint">Hint : </label>
                             <select name="hint" id="txt_hint" class="hint-column" required>
-                                <option value="" selected disabled hidden>-- Choose at least one --</option>
+                                <option value="" selected disabled>-- Choose at least one --</option>
                                 <option value="Apa hobi anda?">Apa hobi anda?</option>
                                 <option value="Apa makanan kesukaan anda?">Apa makanan kesukaan anda?</option>
                                 <option value="Siapa nama ibu anda?">Siapa nama ibu anda?</option>
@@ -158,7 +104,7 @@ if (isset($_GET['login_section'])) {
                                 placeholder="Input your Hint Answer here">
                             <input name="submit" type="submit" class="button-submit2">
                             <p style="position: relative; top: -17px; right: 10px;">Sudah punya akun?? <a
-                                    href="<?php echo "$_SERVER[SCRIPT_NAME]?login_section=signin" ?>" class="ket-login" style="margin-left: 70px; border-radius: 5px; padding: 5px; 
+                                    href="<?php echo "$_SERVER[SCRIPT_NAME]?login_section=signin" ?>" class="ket-login" style="border-radius: 5px; padding: 5px; 
                                         list-style-type: none; text-decoration: none; color: white;">Login</a></p>
                         </form>
                         <?php
@@ -184,9 +130,6 @@ if (isset($_GET['login_section'])) {
                     <a href="forgot.php" class="change-password"
                         style="color: white; position: relative; left: 2px; margin-top: 20px;">Forgot Password?</a>
                     <input name="submit" type="submit" class="button-submit1" style="margin-top: 7px; margin-bottom: 30px;">
-                    <p style="position: relative; right: 25px; bottom: 15px;">Belum punya akun?? <a
-                            href="<?php echo "$_SERVER[SCRIPT_NAME]?login_section=signup" ?>" class="ket-register1"
-                            style="position: relative; left: 55px; color: white;">Register</a></p>
                 </form>
                 <?php
             }

@@ -13,7 +13,7 @@ require_once("koneksi.php");
 
 $bulan_tahun_saat_ini = date('Y-m');
 
-$query = "SELECT penjualan.id_penjualan, penjualan.tanggal_penjualan, pelanggan.nama_pelanggan, anggrek.nama_anggrek, penjualan.jumlah, penjualan.total_harga FROM penjualan
+$query = "SELECT penjualan.id_penjualan, penjualan.tanggal_penjualan, pelanggan.nama_pelanggan, anggrek.nama_anggrek, penjualan.jumlah_item, penjualan.total_harga FROM penjualan
 JOIN detail_penjualan ON penjualan.id_penjualan = detail_penjualan.id_penjualan
 JOIN anggrek ON detail_penjualan.id_anggrek = anggrek.id_anggrek
 JOIN pelanggan ON penjualan.id_pelanggan = pelanggan.id_pelanggan
@@ -81,7 +81,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             transition: background-color 0.3s;
             position: relative;
             width: 130px;
-            margin-left: 900px;
+            margin-left: 706px;
             position: relative;
             bottom: 50px;
         }
@@ -191,8 +191,10 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <div class="page-title" style="display: inline-block;">
                         <div class="title_left">
                             <h3>Data-data Transaksi</h3>
-                            <button class="tombol-tambah"><a href="Transaksi.php" style="color: #333;" class="a-tambah">Tambah
-                                    Data</a></button>
+                            <form action="Transaksi.php" style="margin-left: 243px;">
+                                <button class="tombol-tambah"><a href="Transaksi.php" style="color: #333;" class="a-tambah">Tambah
+                                        Data</a></button>
+                            </form>
                         </div>
                     </div>
 
@@ -223,7 +225,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             <th>Nama Anggrek</th>
                                                             <th>Jumlah</th>
                                                             <th>Total Harga</th>
-                                                            <th style="width: 50px;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -234,11 +235,8 @@ while ($row = mysqli_fetch_assoc($result)) {
                                                             echo "<td>" . $row['tanggal_penjualan'] . "</td>";
                                                             echo "<td>" . $row['nama_pelanggan'] . "</td>";
                                                             echo "<td>" . $row['nama_anggrek'] . "</td>";
-                                                            echo "<td>" . $row['jumlah'] . "</td>";
+                                                            echo "<td>" . $row['jumlah_item'] . "</td>";
                                                             echo "<td>" . $row['total_harga'] . "</td>";
-                                                            echo '<td>';
-                                                            echo '<button data-target="#edit-modal" data-toggle="modal" data-id="' . $row['id_penjualan'] . '" type="button" name="edit" class="btn btn-primary">Edit</button>';
-                                                            echo '</td>';
                                                             echo "</tr>";
                                                             $no++;
                                                         }
